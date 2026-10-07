@@ -1,0 +1,58 @@
+<!--title:eRecept – ORTOHAL Krnov-->
+<!--desc:Žádost o elektronický recept bez návštěvy ortopedické ambulance ORTOHAL v Krnově.-->
+<style>
+  .er{display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); gap:64px; padding-top:56px; padding-bottom:96px; align-items:start}
+  @media (max-width:900px){.er{grid-template-columns:1fr; gap:36px; padding-top:36px}}
+  .er aside{border-left:3px solid var(--blue); padding:4px 0 4px 24px; color:var(--ink-soft)}
+  .er aside h3{color:var(--blue-ink)}
+  .er aside ol{padding-left:20px}
+</style>
+<div class="page-head">
+  <div class="wrap">
+    <p class="kicker">eRecept</p>
+    <h1>Recept bez návštěvy ordinace</h1>
+    <p>Lék, který vám u nás už lékař předepsal, vám můžeme poslat jako elektronický recept. Žádost vyřídíme v nejbližší ordinační den.</p>
+  </div>
+</div>
+<div class="wrap er">
+  <div>
+    <div class="msg" id="eMsg" hidden></div>
+    <form id="erForm" novalidate>
+      <div class="row2">
+        <div class="field"><label for="e_name">Jméno a příjmení pacienta</label><input id="e_name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="e_birth">Datum narození</label><input id="e_birth" name="birth" type="date" min="1900-01-01" required></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="e_phone">Mobil pro SMS s receptem</label><input id="e_phone" name="phone" type="tel" autocomplete="tel" placeholder="777 123 456" required></div>
+        <div class="field"><label for="e_email">E-mail <span style="text-transform:none;letter-spacing:0;color:var(--ink-soft)">(nepovinné)</span></label><input id="e_email" name="email" type="email" autocomplete="email"></div>
+      </div>
+      <div class="field"><label for="e_drug">Název léku a dávkování</label><input id="e_drug" name="drug" placeholder="např. Ibalgin 400 mg, 1 balení" required></div>
+      <div class="field"><label for="e_doc">Ošetřující lékař</label>
+        <select id="e_doc" name="doctor">
+          <option value="">Nevím / je to jedno</option>
+          <option value="halir">MUDr. Miroslav Halíř</option>
+          <option value="kocian">MUDr. Rostislav Kocián</option>
+          <option value="zapalac">MUDr. Karel Zapalač</option>
+        </select>
+      </div>
+      <div class="field"><label for="e_note">Poznámka <span style="text-transform:none;letter-spacing:0;color:var(--ink-soft)">(nepovinné)</span></label><textarea id="e_note" name="note" rows="3" maxlength="1000"></textarea></div>
+      <div class="hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
+      <label class="check"><input type="checkbox" name="consent" required> <span>Souhlasím se <a href="/ochrana-osobnich-udaju" target="_blank">zpracováním osobních údajů</a> za účelem vyřízení žádosti o eRecept.</span></label>
+      <button class="btn btn-red" type="submit">Odeslat žádost</button>
+    </form>
+  </div>
+  <aside>
+    <h3>Jak to funguje</h3>
+    <ol>
+      <li>Vyplníte žádost – stačí jednou.</li>
+      <li>Lékař ji zkontroluje v nejbližší ordinační den.</li>
+      <li>Kód eReceptu vám přijde SMS na uvedený mobil, s ním si lék vyzvednete v kterékoli lékárně.</li>
+    </ol>
+    <p>Nový lék, který jste u nás ještě nedostali, lékař bez vyšetření předepsat nemůže. V takovém případě přijďte v ordinačních hodinách nebo se <a href="/rezervace">objednejte</a>.</p>
+  </aside>
+</div>
+<script src="/js/site.js"></script>
+<script>
+document.getElementById("e_birth").max = new Date().toISOString().slice(0, 10);
+ORTOHAL.form("erForm", "erecept", "eMsg", "Žádost jsme přijali. Kód eReceptu vám pošleme SMS po vyřízení lékařem.");
+</script>

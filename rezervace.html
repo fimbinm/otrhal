@@ -2,627 +2,297 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rezervace termínu — ORTOHAL Krnov</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Objednání online – ORTOHAL Krnov</title>
+<meta name="description" content="Online objednání do ortopedické ambulance ORTOHAL v Krnově. Volné termíny MUDr. Halíře (pondělí 16–18) a MUDr. Kociána (úterý 12:30–15:30).">
+<link rel="icon" href="/img/znak.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
 <style>
-  :root{
-    --blue:#1B3A8C;
-    --blue-deep:#122870;
-    --blue-pale:#EAF0FB;
-    --ice:#F5F8FD;
-    --line:#D5DFF0;
-    --red:#C0272D;
-    --red-pale:#FAEAEA;
-    --ink:#111827;
-    --ink-soft:#4B5A72;
-    --white:#fff;
-    --r:6px;
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{margin:0; font-family:'Inter',sans-serif; background:var(--ice); color:var(--ink); line-height:1.6; -webkit-font-smoothing:antialiased;}
-  h1,h2,h3{font-family:'Source Serif 4',serif; color:var(--blue-deep); margin:0 0 .4em;}
-  a{color:var(--blue);}
+  .book{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:56px; align-items:start; padding:56px 0 96px}
+  @media (max-width:960px){.book{grid-template-columns:1fr; gap:32px; padding-top:36px}}
+  .step{padding:0 0 40px; margin:0 0 40px; border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:0}
+  .step-h{display:flex; align-items:baseline; gap:16px; margin-bottom:20px}
+  .step-h b{font:400 15px/1 var(--head); color:var(--red); letter-spacing:.08em}
+  .step-h h2{font-size:28px; margin:0}
+  .step.off{opacity:.38; pointer-events:none}
 
-  /* ===== Header ===== */
-  .header{background:var(--blue-deep); padding:14px 24px; display:flex; align-items:center; justify-content:space-between;}
-  .header a{color:#fff; font-size:13.5px; font-weight:600; display:flex; align-items:center; gap:6px; text-decoration:none;}
-  .header a:hover{opacity:.8;}
-  .header img{height:56px; width:auto;}
+  .days{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px}
+  .day{position:relative; text-align:left; background:#fff; border:1px solid var(--line-strong); border-radius:var(--r); padding:14px 14px 12px; cursor:pointer; transition:border-color .15s, box-shadow .15s}
+  .day:hover{border-color:var(--blue)}
+  .day[aria-pressed="true"]{border-color:var(--blue); box-shadow:inset 0 0 0 1px var(--blue); background:var(--blue-pale)}
+  .day .dn{display:block; font:500 12px/1 var(--head); letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft)}
+  .day .dd{display:block; font:400 26px/1.1 var(--head); color:var(--blue-ink); margin:8px 0 4px}
+  .day .dw{display:block; font-size:14.5px; color:var(--ink-soft)}
+  .day .df{display:block; margin-top:8px; font:500 13px/1 var(--head); letter-spacing:.04em; color:#227A3D}
+  .day.full,.day.shut{cursor:not-allowed; background:var(--paper)}
+  .day.full .df,.day.shut .df{color:var(--red)}
+  .day.full .dd,.day.shut .dd{color:var(--ink-soft)}
+  .more{margin-top:14px}
 
-  /* ===== Layout ===== */
-  .wrap{max-width:860px; margin:0 auto; padding:36px 20px 60px;}
-  .intro{margin-bottom:32px;}
-  .intro h1{font-size:28px; margin-bottom:8px;}
-  .intro p{color:var(--ink-soft); font-size:15px; margin:0;}
+  .slots{display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:8px}
+  .slot{min-height:48px; background:#fff; border:1px solid var(--line-strong); border-radius:var(--r); font:500 17px/1 var(--head); color:var(--blue-ink); cursor:pointer; font-variant-numeric:tabular-nums}
+  .slot:hover{border-color:var(--blue)}
+  .slot[aria-pressed="true"]{background:var(--blue); border-color:var(--blue); color:#fff}
+  .slot:disabled{background:var(--paper); color:#A3ADC2; text-decoration:line-through; border-color:var(--line); cursor:not-allowed}
+  .slot-note{font-size:15px; color:var(--ink-soft); margin:0 0 16px}
 
-  /* ===== Steps ===== */
-  .steps{display:flex; gap:0; margin-bottom:32px; background:#fff; border:1px solid var(--line); border-radius:var(--r); overflow:hidden;}
-  .step{flex:1; padding:14px 16px; font-size:13px; font-weight:600; color:var(--ink-soft); border-right:1px solid var(--line); display:flex; align-items:center; gap:8px;}
-  .step:last-child{border-right:none;}
-  .step.active{background:var(--blue-pale); color:var(--blue-deep);}
-  .step.done{color:var(--blue); background:#F0F7FF;}
-  .step-num{width:22px; height:22px; border-radius:50%; background:var(--line); color:var(--ink-soft); font-size:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
-  .step.active .step-num{background:var(--blue); color:#fff;}
-  .step.done .step-num{background:var(--blue); color:#fff;}
-  @media(max-width:600px){.step span.step-label{display:none;}}
+  .sum{position:sticky; top:100px; border:1px solid var(--line-strong); border-radius:var(--r); background:#fff}
+  .sum::before{content:""; display:block; height:4px; background:linear-gradient(90deg, var(--blue) 0 70%, var(--red) 70%)}
+  .sum-in{padding:24px}
+  .sum h3{font:500 12.5px/1 var(--head); letter-spacing:.26em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 16px}
+  .sum dl{margin:0}
+  .sum dt{font-size:13.5px; color:var(--ink-soft)}
+  .sum dd{margin:2px 0 14px; font:400 20px/1.25 var(--head); color:var(--blue-ink)}
+  .sum dd.empty{color:#A3ADC2}
+  .sum .info{margin-top:6px; padding-top:16px; border-top:1px solid var(--line); font-size:14.5px; color:var(--ink-soft)}
+  .sum .info p{margin:0 0 8px}
+  @media (max-width:960px){.sum{position:static}}
 
-  /* ===== Card ===== */
-  .card{background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:28px; margin-bottom:20px;}
-  .card h2{font-size:18px; margin-bottom:18px;}
-
-  /* ===== Doctor select ===== */
-  .doctor-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
-  @media(max-width:580px){.doctor-grid{grid-template-columns:1fr;}}
-  .doctor-btn{border:1.5px solid var(--line); border-radius:var(--r); padding:14px 16px; background:#fff; cursor:pointer; text-align:left; transition:.15s;}
-  .doctor-btn:hover{border-color:var(--blue);}
-  .doctor-btn.selected{border-color:var(--blue); background:var(--blue-pale);}
-  .doctor-btn .dname{font-weight:700; font-size:14px; color:var(--blue-deep); display:block; margin-bottom:3px;}
-  .doctor-btn .dday{font-size:12.5px; color:var(--ink-soft);}
-
-  /* ===== Calendar ===== */
-  .cal-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
-  .cal-header h3{font-size:16px; margin:0;}
-  .cal-nav{background:none; border:1px solid var(--line); border-radius:var(--r); width:32px; height:32px; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center;}
-  .cal-nav:hover{background:var(--blue-pale);}
-  .week-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:8px;}
-  .week-label{text-align:center; font-size:11px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; padding:4px 0;}
-  .day-cell{aspect-ratio:1; border-radius:var(--r); border:1.5px solid transparent; display:flex; align-items:center; justify-content:center; font-size:13.5px; font-weight:600; cursor:default; color:var(--ink-soft);}
-  .day-cell.ordination{border-color:var(--line); background:#fff; cursor:pointer; color:var(--ink);}
-  .day-cell.ordination:hover{border-color:var(--blue);}
-  .day-cell.selected{background:var(--blue); border-color:var(--blue); color:#fff;}
-  .day-cell.past{opacity:.35;}
-  .day-cell.today{border-color:var(--red); color:var(--red);}
-  .day-cell.empty{visibility:hidden;}
-  .cal-legend{display:flex; gap:16px; font-size:12px; color:var(--ink-soft); margin-top:10px; flex-wrap:wrap;}
-  .cal-legend span{display:flex; align-items:center; gap:5px;}
-  .leg-dot{width:12px; height:12px; border-radius:3px; flex-shrink:0;}
-
-  /* ===== Slots ===== */
-  .slots-info{font-size:13.5px; color:var(--ink-soft); margin-bottom:14px;}
-  .slot-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(86px,1fr)); gap:9px; margin-bottom:6px;}
-  .slot{border:1.5px solid var(--line); background:var(--ice); text-align:center; padding:11px 4px; border-radius:var(--r); font-size:13.5px; font-weight:600; color:var(--ink-soft);}
-  .slot.free{cursor:pointer; color:var(--blue-deep); background:#fff; border-color:var(--line);}
-  .slot.free:hover{border-color:var(--blue);}
-  .slot.selected{background:var(--blue); border-color:var(--blue); color:#fff;}
-  .slot.taken{text-decoration:line-through; opacity:.38; cursor:not-allowed;}
-  .slot.loading{opacity:.5;}
-  .slot-type{font-size:10.5px; font-weight:400; display:block; margin-top:2px;}
-  .slot.booked-only{border-color:#F5C6C6; background:#FEF5F5; color:var(--red); opacity:.6; cursor:not-allowed;}
-
-  /* ===== Form ===== */
-  .field{margin-bottom:15px;}
-  .field label{display:block; font-size:12.5px; font-weight:600; color:var(--blue-deep); margin-bottom:5px;}
-  .field input,.field textarea,.field select{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:var(--r); font-family:inherit; font-size:14px; background:var(--ice); color:var(--ink);}
-  .field input:focus,.field textarea:focus,.field select:focus{outline:none; border-color:var(--blue); background:#fff;}
-  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  @media(max-width:520px){.field-row{grid-template-columns:1fr;}}
-  .checkbox-row{display:flex; gap:9px; align-items:flex-start; font-size:12.5px; color:var(--ink-soft); margin-bottom:20px;}
-  .checkbox-row input{width:auto; margin-top:3px; flex-shrink:0;}
-
-  /* ===== Buttons ===== */
-  .btn{display:inline-flex; align-items:center; gap:8px; padding:13px 24px; border-radius:var(--r); font-weight:600; font-size:14.5px; border:1.5px solid transparent; cursor:pointer; font-family:inherit;}
-  .btn-primary{background:var(--red); color:#fff; border-color:var(--red);}
-  .btn-primary:hover{background:#9b1e22;}
-  .btn-primary:disabled{opacity:.5; cursor:not-allowed;}
-  .btn-outline{background:#fff; color:var(--blue-deep); border-color:var(--line);}
-  .btn-outline:hover{border-color:var(--blue);}
-  .btn-row{display:flex; gap:12px; flex-wrap:wrap;}
-
-  /* ===== Summary box ===== */
-  .summary{background:var(--blue-pale); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px; margin-bottom:24px; font-size:14px;}
-  .summary strong{color:var(--blue-deep);}
-  .summary-row{display:flex; gap:8px; margin-bottom:6px;}
-  .summary-row:last-child{margin-bottom:0;}
-  .summary-label{color:var(--ink-soft); min-width:100px;}
-
-  /* ===== Success ===== */
-  .success-screen{text-align:center; padding:40px 20px;}
-  .success-icon{width:64px; height:64px; border-radius:50%; background:#EAF5EC; margin:0 auto 20px; display:flex; align-items:center; justify-content:center;}
-  .success-screen h2{font-size:24px; margin-bottom:10px;}
-  .success-screen p{color:var(--ink-soft); max-width:420px; margin:0 auto 24px;}
-
-  /* ===== Alert ===== */
-  .alert{padding:12px 16px; border-radius:var(--r); font-size:13.5px; margin-bottom:16px; display:none;}
-  .alert.show{display:block;}
-  .alert-err{background:#FEF5F5; border:1px solid #F5C6C6; color:var(--red);}
-  .alert-info{background:var(--blue-pale); border:1px solid var(--line); color:var(--blue-deep);}
-
-  /* ===== Loading spinner ===== */
-  .spinner{display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
+  .done{max-width:640px; padding-top:72px; padding-bottom:110px}
+  .done .tick{width:64px; height:64px; border-radius:50%; border:1.5px solid var(--ok); display:flex; align-items:center; justify-content:center; margin-bottom:24px}
+  .done .when{font:400 clamp(24px,3vw,32px)/1.25 var(--head); color:var(--blue-ink); margin:0 0 6px}
+  .done ul{color:var(--ink-soft); padding-left:20px}
+  .skeleton{height:92px; border-radius:var(--r); background:linear-gradient(90deg,var(--paper),#eef1f6,var(--paper)); background-size:200% 100%; animation:sh 1.2s infinite}
+  @keyframes sh{to{background-position:-200% 0}}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <a href="index.html">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-    Zpět na web
-  </a>
-  <img src="logo.png" alt="ORTOHAL Krnov">
+<div class="topline">
+  <div class="wrap">
+    <span><a href="tel:+420554611766">554 611 766</a> &nbsp;·&nbsp; <a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></span>
+    <span class="addr">Poliklinika Krnov, Náměstí Hrdinů 8</span>
+  </div>
 </div>
-
-<div class="wrap">
-  <div class="intro">
-    <h1>Rezervace termínu</h1>
-    <p>Vyberte lékaře, datum a volný čas. Potvrzení přijde e-mailem.</p>
+<header class="site-head">
+  <div class="wrap">
+    <a href="/" class="brand" aria-label="ORTOHAL Krnov – úvod">
+      <img src="/img/znak.png" alt="" width="54" height="54">
+      <span class="brand-txt">ORTOHAL<small>KRNOV</small></span>
+    </a>
+    <button class="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav"><i></i><i></i><i></i></button>
+    <nav class="nav" id="nav">
+      <a href="/#hodiny">Ordinační hodiny</a>
+      <a href="/#sluzby">Služby</a>
+      <a href="/#lekari">Lékaři</a>
+      <a href="/#cenik">Ceník</a>
+      <a href="/erecept">eRecept</a>
+      <a href="/#kontakt">Kontakt</a>
+      <a href="/rezervace" class="btn btn-red">Objednat se</a>
+    </nav>
   </div>
+</header>
 
-  <!-- STEPS -->
-  <div class="steps">
-    <div class="step active" id="step1ind">
-      <span class="step-num">1</span><span class="step-label">Lékař</span>
-    </div>
-    <div class="step" id="step2ind">
-      <span class="step-num">2</span><span class="step-label">Datum & čas</span>
-    </div>
-    <div class="step" id="step3ind">
-      <span class="step-num">3</span><span class="step-label">Vaše údaje</span>
-    </div>
-    <div class="step" id="step4ind">
-      <span class="step-num">4</span><span class="step-label">Potvrzení</span>
-    </div>
-  </div>
-
-  <!-- STEP 1: DOCTOR -->
-  <div id="step1">
-    <div class="card">
-      <h2>1. Vyberte lékaře</h2>
-      <div class="doctor-grid">
-        <button class="doctor-btn" onclick="selectDoctor('halir','MUDr. Miroslav Halíř',1,'Pondělí')" id="doc-halir">
-          <span class="dname">MUDr. Miroslav Halíř</span>
-          <span class="dday">Ordinuje v pondělí</span>
-        </button>
-        <button class="doctor-btn" onclick="selectDoctor('kocian','MUDr. Rostislav Kocián',2,'Úterý')" id="doc-kocian">
-          <span class="dname">MUDr. Rostislav Kocián</span>
-          <span class="dday">Ordinuje v úterý</span>
-        </button>
-        <button class="doctor-btn" onclick="selectDoctor('zapalac','MUDr. Karel Zapalač',5,'Pátek')" id="doc-zapalac">
-          <span class="dname">MUDr. Karel Zapalač</span>
-          <span class="dday">Ordinuje v pátek</span>
-        </button>
-      </div>
+<main>
+  <div class="page-head">
+    <div class="wrap">
+      <p class="kicker">Online objednání</p>
+      <h1>Objednat se na čas</h1>
+      <p>Online se objednáte do bloků vyhrazených pro objednané: <strong>pondělí 16:00–18:00</strong> (MUDr. Halíř) a <strong>úterý 12:30–15:30</strong> (MUDr. Kocián). V ostatních ordinačních hodinách můžete přijít i bez objednání.</p>
     </div>
   </div>
 
-  <!-- STEP 2: DATE & TIME -->
-  <div id="step2" style="display:none;">
-    <div class="card">
-      <h2>2. Vyberte datum</h2>
-      <div class="cal-header">
-        <button class="cal-nav" onclick="prevWeek()">&#8249;</button>
-        <h3 id="calMonth"></h3>
-        <button class="cal-nav" onclick="nextWeek()">&#8250;</button>
-      </div>
-      <div class="week-grid" id="weekLabels"></div>
-      <div class="week-grid" id="calGrid"></div>
-      <div class="cal-legend">
-        <span><span class="leg-dot" style="background:#fff; border:1.5px solid #D5DFF0;"></span> Ordinační den</span>
-        <span><span class="leg-dot" style="background:var(--blue);"></span> Vybraný den</span>
-        <span><span class="leg-dot" style="background:var(--ice); border:1.5px solid #D5DFF0;"></span> Neordinuje</span>
-      </div>
-    </div>
+  <div class="wrap" id="flow">
+    <div class="book">
+      <div>
+        <div class="msg err" id="err" hidden></div>
 
-    <div class="card" id="slotCard" style="display:none;">
-      <h2>Dostupné termíny</h2>
-      <div class="alert alert-err" id="slotErr"></div>
-      <p class="slots-info" id="slotsInfo"></p>
-      <div class="slot-grid" id="slotGrid"></div>
-    </div>
-
-    <div class="btn-row" style="margin-top:8px;">
-      <button class="btn btn-outline" onclick="goStep(1)">← Zpět</button>
-      <button class="btn btn-primary" id="step2next" onclick="goStep(3)" disabled>Pokračovat →</button>
-    </div>
-  </div>
-
-  <!-- STEP 3: PERSONAL INFO -->
-  <div id="step3" style="display:none;">
-    <div class="card">
-      <h2>3. Vaše kontaktní údaje</h2>
-      <div class="summary" id="step3summary"></div>
-      <div class="alert alert-err" id="formErr"></div>
-      <div class="field-row">
-        <div class="field"><label>Jméno a příjmení *</label><input type="text" id="f_jmeno" required></div>
-        <div class="field"><label>Datum narození *</label><input type="date" id="f_narozeni" required></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Telefon *</label><input type="tel" id="f_telefon" placeholder="+420 123 456 789" required></div>
-        <div class="field"><label>E-mail *</label><input type="email" id="f_email" required></div>
-      </div>
-      <div class="field"><label>Poznámka / důvod návštěvy</label><textarea id="f_poznamka" rows="3" placeholder="Stručně popište důvod návštěvy (nepovinné)..."></textarea></div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="gdpr" required>
-        <label for="gdpr">Souhlasím se zpracováním osobních údajů za účelem rezervace termínu v souladu s GDPR. Údaje budou použity výhradně pro komunikaci ohledně Vaší rezervace.</label>
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="goStep(2)">← Zpět</button>
-      <button class="btn btn-primary" id="submitBtn" onclick="submitBooking()">Potvrdit rezervaci</button>
-    </div>
-  </div>
-
-  <!-- STEP 4: SUCCESS -->
-  <div id="step4" style="display:none;">
-    <div class="card">
-      <div class="success-screen">
-        <div class="success-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2C6B36" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
+        <div class="step" id="s1">
+          <div class="step-h"><b>01</b><h2>Den</h2></div>
+          <div class="days" id="days"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+          <button class="btn btn-line more" id="moreDays" hidden>Zobrazit další týdny</button>
         </div>
-        <h2>Rezervace potvrzena!</h2>
-        <p>Na Váš e-mail jsme zaslali potvrzení s detaily termínu. Těšíme se na Vaši návštěvu.</p>
-        <div class="summary" id="successSummary" style="text-align:left; max-width:400px; margin:0 auto 24px;"></div>
-        <a href="index.html" class="btn btn-outline">← Zpět na hlavní stránku</a>
+
+        <div class="step off" id="s2">
+          <div class="step-h"><b>02</b><h2>Čas</h2></div>
+          <p class="slot-note" id="slotNote">Nejdřív vyberte den.</p>
+          <div class="slots" id="slots"></div>
+        </div>
+
+        <div class="step off" id="s3">
+          <div class="step-h"><b>03</b><h2>Vaše údaje</h2></div>
+          <form id="bookForm" novalidate>
+            <div class="row2">
+              <div class="field"><label for="f_name">Jméno a příjmení pacienta</label><input id="f_name" name="name" autocomplete="name" required></div>
+              <div class="field"><label for="f_birth">Datum narození</label><input id="f_birth" name="birth" type="date" min="1900-01-01" required></div>
+            </div>
+            <div class="row2">
+              <div class="field"><label for="f_phone">Telefon</label><input id="f_phone" name="phone" type="tel" autocomplete="tel" placeholder="777 123 456" required></div>
+              <div class="field"><label for="f_email">E-mail</label><input id="f_email" name="email" type="email" autocomplete="email" required><div class="hint">Pošleme sem potvrzení a odkaz na zrušení.</div></div>
+            </div>
+            <div class="row2">
+              <div class="field"><label for="f_ins">Zdravotní pojišťovna</label><select id="f_ins" name="insurer" required><option value="">Vyberte…</option></select></div>
+              <div class="field"><label for="f_type">Důvod návštěvy</label><select id="f_type" name="type" required><option value="">Vyberte…</option></select></div>
+            </div>
+            <div class="field"><label for="f_note">Poznámka <span style="text-transform:none;letter-spacing:0;color:var(--ink-soft)">(nepovinné)</span></label><textarea id="f_note" name="note" rows="3" maxlength="500" placeholder="Např. které místo bolí, od kdy, zda jde o kontrolu po úrazu…"></textarea></div>
+            <div class="hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
+            <label class="check"><input type="checkbox" name="consent" required> <span>Souhlasím se <a href="/ochrana-osobnich-udaju" target="_blank">zpracováním osobních údajů</a> pro účely objednání a beru na vědomí pravidla objednávání (objednaní mají přednost; při zpoždění rezervace propadá; akutní stavy jsou ošetřeny přednostně).</span></label>
+            <button class="btn btn-red" type="submit" id="submitBtn" style="width:100%">Závazně objednat</button>
+          </form>
+        </div>
       </div>
+
+      <aside class="sum" aria-live="polite">
+        <div class="sum-in">
+          <h3>Váš termín</h3>
+          <dl>
+            <dt>Den</dt><dd id="sumDay" class="empty">nevybráno</dd>
+            <dt>Čas</dt><dd id="sumTime" class="empty">nevybráno</dd>
+            <dt>Lékař</dt><dd id="sumDoc" class="empty">—</dd>
+          </dl>
+          <div class="info">
+            <p>Poliklinika Krnov, Náměstí Hrdinů 8</p>
+            <p>Termín nejde vybrat? Zavolejte nám: <a href="tel:+420554611766">554 611 766</a></p>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 
-</div>
+  <div class="wrap done" id="done" hidden>
+    <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2C6B36" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+    <p class="kicker">Objednáno</p>
+    <p class="when" id="doneWhen"></p>
+    <p id="doneDoc" style="color:var(--ink-soft)"></p>
+    <ul>
+      <li>Potvrzení jsme poslali na váš e-mail (zkontrolujte i hromadnou poštu nebo spam).</li>
+      <li>Přijďte prosím 5 minut předem, s kartičkou pojišťovny a případnými zprávami a snímky.</li>
+      <li>Když nemůžete přijít, termín zrušte odkazem v e-mailu nebo zavolejte na 554 611 766 – uvolníte ho dalším pacientům.</li>
+    </ul>
+    <a href="/" class="btn btn-line">Zpět na úvod</a>
+  </div>
+</main>
 
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-bottom" style="margin-top:0; border-top:0; padding-top:0">
+      <span>© <span class="year">2026</span> ORTOHAL s.r.o. · IČ 06771742 · <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a></span>
+      <span><a href="tel:+420554611766">554 611 766</a> · <a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/site.js"></script>
 <script>
-/* ============================================================
-   CONFIG
-============================================================ */
-const SUPABASE_URL = 'https://mqvqnhoubrshwfockmvs.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_jRqDQ5Xp9bkUB_3EFlV0iA_pRuK1c1G';
-const RESEND_KEY   = 're_Mb6uHJSR_DveomCEmv9ZyZ46gd4HnxVoL';
-const NOTIF_MAIL   = 'rezervace.ortohal@gmail.com';
-const FROM_MAIL    = 'onboarding@resend.dev'; // → změnit na rezervace@ortohal.cz až bude doména
+const $ = (id) => document.getElementById(id);
+const S = { days: [], day: null, time: null, showAll: false };
+const DN = ["neděle", "pondělí", "úterý", "středa", "čtvrtek", "pátek", "sobota"];
+const dObj = (d) => new Date(d + "T12:00:00");
+const longDay = (d) => dObj(d).toLocaleDateString("cs-CZ", { weekday: "long", day: "numeric", month: "long" });
 
-/* ============================================================
-   STATE
-============================================================ */
-let state = {
-  doctor: null,   // {id, name, dayOfWeek, dayName}
-  weekOffset: 0,
-  selectedDate: null,  // Date object
-  selectedSlot: null,  // '8:00'
-  takenSlots: [],      // ['2026-07-07_8:00', ...]
-};
-
-/* ============================================================
-   SLOTS PER DOCTOR
-============================================================ */
-const doctorSlots = {
-  halir:   ['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30'],
-  kocian:  ['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30'],
-  zapalac: ['7:00','7:30','8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30'],
-};
-
-/* ============================================================
-   STEP NAVIGATION
-============================================================ */
-function goStep(n){
-  [1,2,3,4].forEach(i=>{
-    document.getElementById('step'+i).style.display = i===n?'block':'none';
-    const ind = document.getElementById('step'+i+'ind');
-    ind.classList.toggle('active', i===n);
-    ind.classList.toggle('done', i<n);
-  });
-  window.scrollTo({top:0, behavior:'smooth'});
-  if(n===2) renderCalendar();
+function err(text) {
+  $("err").textContent = text;
+  $("err").hidden = !text;
+  if (text) $("err").scrollIntoView({ block: "center", behavior: "smooth" });
 }
 
-/* ============================================================
-   STEP 1 — DOCTOR
-============================================================ */
-function selectDoctor(id, name, dow, dayName){
-  state.doctor = {id, name, dayOfWeek: dow, dayName};
-  state.selectedDate = null;
-  state.selectedSlot = null;
-  state.weekOffset = 0;
-  document.querySelectorAll('.doctor-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('doc-'+id).classList.add('selected');
-  setTimeout(()=>goStep(2), 180);
-}
-
-/* ============================================================
-   STEP 2 — CALENDAR
-============================================================ */
-const MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
-const DAYS   = ['Po','Út','St','Čt','Pá','So','Ne'];
-
-function getMonday(d){
-  const dt = new Date(d);
-  const day = dt.getDay();
-  const diff = (day===0)?-6:1-day;
-  dt.setDate(dt.getDate()+diff);
-  dt.setHours(0,0,0,0);
-  return dt;
-}
-
-function renderCalendar(){
-  const today = new Date(); today.setHours(0,0,0,0);
-  const monday = getMonday(new Date(today.getTime() + state.weekOffset*7*24*3600*1000));
-  const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
-
-  // month label
-  const m1 = monday.getMonth(), m2 = sunday.getMonth();
-  const y1 = monday.getFullYear(), y2 = sunday.getFullYear();
-  let label = MONTHS[m1];
-  if(m1!==m2) label += ' / '+MONTHS[m2];
-  if(y1!==y2) label += ' '+y1+' – '+y2; else label += ' '+y1;
-  document.getElementById('calMonth').textContent = label;
-
-  // week day labels
-  const wl = document.getElementById('weekLabels');
-  wl.innerHTML = DAYS.map(d=>`<div class="week-label">${d}</div>`).join('');
-
-  // day cells (Mon–Sun = 7 cells)
-  const grid = document.getElementById('calGrid');
-  grid.innerHTML = '';
-  for(let i=0;i<7;i++){
-    const d = new Date(monday); d.setDate(monday.getDate()+i);
-    const dow = d.getDay()===0?7:d.getDay(); // 1=Mo .. 7=Su
-    const isOrdinDay = dow === state.doctor.dayOfWeek;
-    const isPast = d < today;
-    const isToday = d.getTime()===today.getTime();
-    const isSel = state.selectedDate && d.getTime()===state.selectedDate.getTime();
-
-    const cell = document.createElement('div');
-    cell.className = 'day-cell';
-    cell.textContent = d.getDate();
-    if(isPast){ cell.classList.add('past'); }
-    else if(isOrdinDay){
-      cell.classList.add('ordination');
-      if(isToday) cell.classList.add('today');
-      if(isSel) cell.classList.add('selected');
-      cell.onclick = ()=>selectDate(new Date(d));
-    }
-    grid.appendChild(cell);
-  }
-}
-
-function prevWeek(){ state.weekOffset--; renderCalendar(); }
-function nextWeek(){ state.weekOffset++; renderCalendar(); }
-
-async function selectDate(d){
-  state.selectedDate = d;
-  state.selectedSlot = null;
-  document.getElementById('step2next').disabled = true;
-  renderCalendar();
-  await loadSlots(d);
-}
-
-/* ============================================================
-   SLOTS LOADING
-============================================================ */
-function dateKey(d, slot){
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,'0');
-  const day = String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${day}_${slot}`;
-}
-
-function formatDate(d){
-  return d.toLocaleDateString('cs-CZ',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-}
-
-async function loadSlots(d){
-  const slotCard = document.getElementById('slotCard');
-  slotCard.style.display = 'block';
-  const grid = document.getElementById('slotGrid');
-  const info = document.getElementById('slotsInfo');
-  grid.innerHTML = '<div class="slot loading">Načítám...</div>';
-  info.textContent = 'Načítám dostupné termíny...';
-  document.getElementById('slotErr').classList.remove('show');
-
-  // Format date for Supabase query
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,'0');
-  const day = String(d.getDate()).padStart(2,'0');
-  const dateStr = `${y}-${m}-${day}`;
-
+async function load(keep) {
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/rezervace?datum=eq.${dateStr}&lekar=eq.${state.doctor.name}&select=cas`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+SUPABASE_KEY } }
-    );
-    if(!res.ok) throw new Error('Chyba při načítání termínů');
-    const data = await res.json();
-    state.takenSlots = data.map(r=>r.cas);
-    renderSlots(d);
-    info.textContent = `Dostupné termíny — ${formatDate(d)}`;
-  } catch(e){
-    grid.innerHTML = '';
-    const err = document.getElementById('slotErr');
-    err.textContent = 'Nepodařilo se načíst termíny. Zkuste to prosím znovu.';
-    err.classList.add('show');
-  }
-}
-
-function renderSlots(d){
-  const slots = doctorSlots[state.doctor.id] || [];
-  const grid = document.getElementById('slotGrid');
-  grid.innerHTML = '';
-  slots.forEach(s=>{
-    const taken = state.takenSlots.includes(s);
-    const div = document.createElement('div');
-    div.className = 'slot ' + (taken ? 'taken' : 'free');
-    div.textContent = s;
-    if(!taken){
-      div.onclick = ()=>{
-        document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected'));
-        div.classList.add('selected');
-        state.selectedSlot = s;
-        document.getElementById('step2next').disabled = false;
-      };
+    const j = await ORTOHAL.api("/api/booking?a=days");
+    S.days = j.days;
+    if (!keep) {
+      $("f_ins").innerHTML = '<option value="">Vyberte…</option>' + Object.entries(j.insurers).map(([k, v]) => `<option value="${k}">${k} – ${escapeHtml(v)}</option>`).join("");
+      $("f_type").innerHTML = '<option value="">Vyberte…</option>' + j.types.map((t) => `<option>${escapeHtml(t)}</option>`).join("");
     }
-    if(state.selectedSlot===s && !taken) div.classList.add('selected');
-    grid.appendChild(div);
-  });
+    renderDays();
+    if (S.day) renderSlots();
+  } catch (e) {
+    $("days").innerHTML = "";
+    err("Volné termíny se nepodařilo načíst. Zkuste obnovit stránku, nebo se objednejte telefonicky na 554 611 766.");
+  }
 }
 
-/* ============================================================
-   STEP 3 — SUMMARY & FORM
-============================================================ */
-function renderSummary(el){
-  el.innerHTML = `
-    <div class="summary-row"><span class="summary-label">Lékař:</span><strong>${state.doctor.name}</strong></div>
-    <div class="summary-row"><span class="summary-label">Datum:</span><strong>${formatDate(state.selectedDate)}</strong></div>
-    <div class="summary-row"><span class="summary-label">Čas:</span><strong>${state.selectedSlot}</strong></div>`;
+function renderDays() {
+  const list = S.showAll ? S.days : S.days.slice(0, 6);
+  $("moreDays").hidden = S.showAll || S.days.length <= 6;
+  if (!S.days.length) { $("days").innerHTML = '<p class="slot-note">Momentálně nejsou vypsané žádné termíny. Zavolejte nám prosím.</p>'; return; }
+  $("days").innerHTML = list.map((d) => {
+    const free = d.slots.filter((s) => s.free).length;
+    const cls = d.closed ? "shut" : free ? "" : "full";
+    const label = d.closed ? escapeHtml(d.closed) : free ? `${free} volných` : "obsazeno";
+    const dd = dObj(d.date);
+    return `<button type="button" class="day ${cls}" data-date="${d.date}" aria-pressed="${S.day === d.date}" ${cls ? "disabled" : ""}>
+      <span class="dn">${DN[dd.getDay()]}</span>
+      <span class="dd">${dd.getDate()}. ${dd.getMonth() + 1}.</span>
+      <span class="dw">${escapeHtml(d.doctor)}</span>
+      <span class="df">${label}</span></button>`;
+  }).join("");
 }
 
-const origGoStep = goStep;
-// override goStep for step3 to also render summary
-const _goStep = function(n){
-  origGoStep(n);
-  if(n===3) renderSummary(document.getElementById('step3summary'));
-};
-// replace globally
-window.goStep = _goStep;
+function renderSlots() {
+  const d = S.days.find((x) => x.date === S.day);
+  if (!d) return;
+  $("s2").classList.remove("off");
+  $("slotNote").textContent = `${longDay(d.date)} · ${d.doctor} · ordinace pro objednané ${d.from}–${d.to}`;
+  $("slots").innerHTML = d.slots.map((s) => `<button type="button" class="slot" data-t="${s.t}" aria-pressed="${S.time === s.t}" ${s.free ? "" : "disabled"}>${s.t}</button>`).join("");
+}
 
-/* ============================================================
-   SUBMIT
-============================================================ */
-async function submitBooking(){
-  const jmeno    = document.getElementById('f_jmeno').value.trim();
-  const narozeni = document.getElementById('f_narozeni').value;
-  const telefon  = document.getElementById('f_telefon').value.trim();
-  const email    = document.getElementById('f_email').value.trim();
-  const poznamka = document.getElementById('f_poznamka').value.trim();
-  const gdpr     = document.getElementById('gdpr').checked;
-  const err      = document.getElementById('formErr');
+function renderSum() {
+  const d = S.days.find((x) => x.date === S.day);
+  const set = (id, v) => { $(id).textContent = v || "nevybráno"; $(id).classList.toggle("empty", !v); };
+  set("sumDay", d && longDay(d.date));
+  set("sumTime", S.time);
+  $("sumDoc").textContent = d ? d.doctor : "—";
+  $("sumDoc").classList.toggle("empty", !d);
+  $("s3").classList.toggle("off", !S.time);
+}
 
-  err.classList.remove('show');
-  if(!jmeno||!narozeni||!telefon||!email){
-    err.textContent='Vyplňte prosím všechna povinná pole (označená *).'; err.classList.add('show'); return;
+$("days").addEventListener("click", (e) => {
+  const b = e.target.closest(".day");
+  if (!b || b.disabled) return;
+  S.day = b.dataset.date;
+  S.time = null;
+  err("");
+  renderDays(); renderSlots(); renderSum();
+  if (window.innerWidth < 960) $("s2").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+$("slots").addEventListener("click", (e) => {
+  const b = e.target.closest(".slot");
+  if (!b || b.disabled) return;
+  S.time = b.dataset.t;
+  renderSlots(); renderSum();
+  if (window.innerWidth < 960) $("s3").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+$("moreDays").addEventListener("click", () => { S.showAll = true; renderDays(); });
+$("f_birth").max = new Date().toISOString().slice(0, 10);
+
+$("bookForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  if (!S.day || !S.time) return err("Vyberte prosím den a čas.");
+  if (!f.checkValidity()) {
+    const bad = f.querySelector(":invalid");
+    err(bad.type === "checkbox" ? "Potvrďte prosím souhlas se zpracováním údajů." : `Vyplňte prosím: ${bad.labels[0] ? bad.labels[0].textContent.trim() : "povinná pole"}.`);
+    bad.focus();
+    return;
   }
-  if(!gdpr){
-    err.textContent='Pro pokračování je nutný souhlas se zpracováním osobních údajů.'; err.classList.add('show'); return;
-  }
-
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Odesílám...';
-
-  // format date for DB
-  const y = state.selectedDate.getFullYear();
-  const m = String(state.selectedDate.getMonth()+1).padStart(2,'0');
-  const d = String(state.selectedDate.getDate()).padStart(2,'0');
-  const dateStr = `${y}-${m}-${d}`;
-
+  const data = { ...Object.fromEntries(new FormData(f)), consent: f.consent.checked, date: S.day, time: S.time };
+  const btn = $("submitBtn");
+  btn.disabled = true; btn.textContent = "Odesílám…";
+  err("");
   try {
-    // 1. Check slot still free
-    const check = await fetch(
-      `${SUPABASE_URL}/rest/v1/rezervace?datum=eq.${dateStr}&lekar=eq.${encodeURIComponent(state.doctor.name)}&cas=eq.${encodeURIComponent(state.selectedSlot)}&select=id`,
-      { headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY} }
-    );
-    const existing = await check.json();
-    if(existing.length>0){
-      err.textContent='Tento termín byl právě obsazen někým jiným. Vyberte prosím jiný čas.';
-      err.classList.add('show');
-      btn.disabled=false; btn.textContent='Potvrdit rezervaci';
-      await loadSlots(state.selectedDate);
-      return;
-    }
-
-    // 2. Save to Supabase
-    const ins = await fetch(`${SUPABASE_URL}/rest/v1/rezervace`, {
-      method:'POST',
-      headers:{
-        'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,
-        'Content-Type':'application/json','Prefer':'return=minimal'
-      },
-      body: JSON.stringify({
-        datum: dateStr,
-        cas: state.selectedSlot,
-        lekar: state.doctor.name,
-        jmeno, telefon, email, poznamka
-      })
-    });
-    if(!ins.ok) throw new Error('DB error');
-
-    // 3. Send emails via Supabase Edge Function (avoids CORS)
-    const emailRes = await fetch(
-      `${SUPABASE_URL}/functions/v1/send-booking-email`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-        },
-        body: JSON.stringify({
-          datum: dateStr,
-          cas: state.selectedSlot,
-          lekar: state.doctor.name,
-          jmeno, telefon, email, poznamka
-        })
-      }
-    );
-    if (!emailRes.ok) {
-      const errData = await emailRes.json().catch(()=>({}));
-      console.warn('Email send failed:', errData);
-      // Don't block success — reservation is saved, email is secondary
-    }
-
-    // 4. Show success
-    renderSummary(document.getElementById('successSummary'));
-    origGoStep(4);
-
-  } catch(e){
-    err.textContent = 'Při odesílání došlo k chybě. Zkuste to prosím znovu nebo nás kontaktujte telefonicky.';
-    err.classList.add('show');
-    btn.disabled=false; btn.textContent='Potvrdit rezervaci';
+    const r = await ORTOHAL.api("/api/booking?a=book", data);
+    $("flow").hidden = true;
+    document.querySelector(".page-head").hidden = true;
+    $("doneWhen").textContent = r.when.charAt(0).toUpperCase() + r.when.slice(1);
+    $("doneDoc").textContent = `${r.doctor} · Poliklinika Krnov, Náměstí Hrdinů 8`;
+    $("done").hidden = false;
+    window.scrollTo({ top: 0 });
+  } catch (x) {
+    err(x.message);
+    if (/obsazen|někdo jiný|nelze/.test(x.message)) { S.time = null; await load(true); renderSum(); }
+  } finally {
+    btn.disabled = false; btn.textContent = "Závazně objednat";
   }
-}
+});
 
-/* ============================================================
-   SEND EMAIL via Resend
-============================================================ */
-async function sendEmail(to, subject, html, icsB64){
-  const body = {
-    from: FROM_MAIL,
-    to: [to],
-    subject,
-    html,
-    attachments:[{
-      filename:'rezervace-ortohal.ics',
-      content: icsB64
-    }]
-  };
-  await fetch('https://api.resend.com/emails',{
-    method:'POST',
-    headers:{'Authorization':'Bearer '+RESEND_KEY,'Content-Type':'application/json'},
-    body: JSON.stringify(body)
-  });
-}
-
-/* ============================================================
-   BUILD ICS (calendar file)
-============================================================ */
-function buildICS(dateStr, timeStr, doctor, patient){
-  const [y,m,d] = dateStr.split('-');
-  const [h,min] = timeStr.split(':');
-  const dtStart = `${y}${m}${d}T${h.padStart(2,'0')}${(min||'00').padStart(2,'0')}00`;
-  // +30 min end
-  const endMin = parseInt(min||0)+30;
-  const endH = parseInt(h) + Math.floor(endMin/60);
-  const dtEnd = `${y}${m}${d}T${String(endH).padStart(2,'0')}${String(endMin%60).padStart(2,'0')}00`;
-  const now = new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
-  return `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//ORTOHAL//Rezervace//CS
-BEGIN:VEVENT
-UID:ortohal-${dateStr}-${timeStr.replace(':','')}@ortohal.cz
-DTSTAMP:${now}
-DTSTART:${dtStart}
-DTEND:${dtEnd}
-SUMMARY:Ortopedie — ${doctor}
-DESCRIPTION:Pacient: ${patient}\\nAdresa: Náměstí Hrdinů 8\\, Krnov\\nTel: +420 554 611 766
-LOCATION:Náměstí Hrdinů 8\\, Krnov
-END:VEVENT
-END:VCALENDAR`;
-}
-
-/* ============================================================
-   INIT
-============================================================ */
-goStep(1);
+load();
 </script>
 </body>
 </html>

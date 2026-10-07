@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Administrace – ORTOHAL Krnov</title>
+<link rel="icon" href="/img/znak.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  body{background:var(--paper)}
+  .bar{background:var(--blue-ink); color:#fff}
+  .bar .wrap{display:flex; justify-content:space-between; align-items:center; height:60px; gap:16px}
+  .bar b{font:400 17px/1 var(--head); letter-spacing:.3em}
+  .bar b span{color:#F08A8D}
+  .bar button{background:none; border:1px solid rgba(255,255,255,.35); color:#fff; padding:8px 14px; border-radius:var(--r); cursor:pointer}
+  .login{max-width:380px; margin:12vh auto; background:#fff; border:1px solid var(--line); padding:32px; border-radius:var(--r)}
+  .grid{display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:28px; padding:28px 0 80px; align-items:start}
+  @media (max-width:1000px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:22px; margin-bottom:22px}
+  .card h2{font-size:22px; margin-bottom:14px}
+  .nav-days{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:16px}
+  .nav-days .btn{min-height:40px; padding:8px 14px; font-size:13px}
+  .nav-days strong{font:400 18px/1 var(--head); margin:0 8px}
+  .day-h{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin:22px 0 8px; padding-bottom:8px; border-bottom:2px solid var(--blue)}
+  .day-h h3{margin:0; font-size:19px}
+  .day-h span{font-size:14px; color:var(--ink-soft)}
+  .day-h.shut{border-color:var(--red)}
+  table{width:100%; border-collapse:collapse; font-size:15px}
+  td{padding:10px 8px; border-bottom:1px solid var(--line); vertical-align:top}
+  td.t{font:500 17px/1.2 var(--head); color:var(--blue-ink); width:64px; white-space:nowrap}
+  td .sub{color:var(--ink-soft); font-size:13.5px}
+  tr.cx td{opacity:.45; text-decoration:line-through}
+  tr.cx td:last-child{text-decoration:none}
+  .tag{display:inline-block; font-size:12px; padding:2px 7px; border-radius:2px; background:var(--blue-pale); color:var(--blue-ink); margin-left:6px}
+  .tag.red{background:var(--red-pale); color:#7D1D20}
+  .x{background:none; border:1px solid var(--line-strong); color:var(--red); border-radius:var(--r); padding:6px 10px; cursor:pointer; font-size:13px; white-space:nowrap}
+  .x:hover{border-color:var(--red)}
+  .empty{color:var(--ink-soft); font-style:italic; padding:8px 0}
+  .warn{background:#FFF6E0; border-left:3px solid #D9A400; padding:12px 14px; font-size:14.5px; margin-bottom:18px}
+  .feed{display:flex; gap:8px}
+  .feed input{flex:1; min-width:0; font-size:13px; padding:8px; border:1px solid var(--line-strong); border-radius:var(--r)}
+  .closed-list{list-style:none; padding:0; margin:12px 0 0}
+  .closed-list li{display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); font-size:15px}
+  small.help{display:block; color:var(--ink-soft); font-size:13.5px; line-height:1.45}
+  .card .field{margin-bottom:12px}
+  .card .field input,.card .field select,.card .field textarea{min-height:42px; padding:8px 10px; font-size:15px}
+  @media print{.bar,.side,.nav-days,.x,.warn{display:none !important} .grid{display:block; padding:0} .card{border:0; padding:0} body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="bar"><div class="wrap"><b>ORTOHAL <span>ADMIN</span></b><button id="logout" hidden>Odhlásit</button></div></div>
+
+<form class="login" id="login" hidden>
+  <h2 style="font-size:26px">Přihlášení</h2>
+  <div class="msg err" id="lErr" hidden></div>
+  <div class="field"><label for="pw">Heslo</label><input type="password" id="pw" autocomplete="current-password" required></div>
+  <button class="btn btn-blue" style="width:100%">Přihlásit</button>
+</form>
+
+<div class="wrap grid" id="app" hidden>
+  <div>
+    <div class="warn" id="warn" hidden></div>
+    <div class="card">
+      <div class="nav-days">
+        <button class="btn btn-line" id="prev">← Předchozí</button>
+        <button class="btn btn-line" id="now">Dnes</button>
+        <button class="btn btn-line" id="next">Další →</button>
+        <strong id="range"></strong>
+        <button class="btn btn-line" onclick="print()" style="margin-left:auto">Tisk</button>
+      </div>
+      <div id="list"></div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h2>Zapsat pacienta</h2>
+      <small class="help" style="margin-bottom:12px">Pro objednání po telefonu – termín se zablokuje i na webu.</small>
+      <div class="msg" id="aMsg" hidden></div>
+      <form id="addForm">
+        <div class="row2">
+          <div class="field"><label for="a_date">Den</label><select id="a_date" name="date" required></select></div>
+          <div class="field"><label for="a_time">Čas</label><select id="a_time" name="time" required></select></div>
+        </div>
+        <div class="field"><label for="a_name">Jméno a příjmení</label><input id="a_name" name="name" required></div>
+        <div class="row2">
+          <div class="field"><label for="a_phone">Telefon</label><input id="a_phone" name="phone" type="tel"></div>
+          <div class="field"><label for="a_birth">Narozen/a</label><input id="a_birth" name="birth" type="date"></div>
+        </div>
+        <div class="field"><label for="a_email">E-mail (pošle se potvrzení)</label><input id="a_email" name="email" type="email"></div>
+        <div class="row2">
+          <div class="field"><label for="a_ins">Pojišťovna</label><select id="a_ins" name="insurer"></select></div>
+          <div class="field"><label for="a_type">Důvod</label><select id="a_type" name="type"></select></div>
+        </div>
+        <div class="field"><label for="a_note">Poznámka</label><input id="a_note" name="note"></div>
+        <button class="btn btn-blue" style="width:100%">Zapsat</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Neordinuje se</h2>
+      <small class="help">Den zmizí z online objednávání a na webu se zobrazí upozornění. Pacienty, kteří už jsou na ten den objednaní, je potřeba zrušit zvlášť (dostanou e-mail).</small>
+      <form id="closeForm" style="margin-top:12px">
+        <div class="row2">
+          <div class="field"><label for="c_date">Datum</label><input id="c_date" type="date" required></div>
+          <div class="field"><label for="c_note">Důvod (veřejný)</label><input id="c_note" placeholder="dovolená"></div>
+        </div>
+        <button class="btn btn-line" style="width:100%">Přidat zavřený den</button>
+      </form>
+      <ul class="closed-list" id="closedList"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Kalendář</h2>
+      <small class="help">Ke každé rezervaci chodí na e-mail ordinace pozvánka, kterou Gmail/Google Kalendář sám zapíše. Pro jistotu můžete kalendář i odebírat – v Google Kalendáři: <em>Další kalendáře → + → Z adresy URL</em> a vložit tuto adresu (Google ji obnovuje cca každých několik hodin). Adresu nikomu nedávejte, obsahuje jména pacientů.</small>
+      <div class="feed" style="margin-top:12px"><input id="feed" readonly><button class="x" id="copy" style="color:var(--blue)">Kopírovat</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const iso = (d) => d.toISOString().slice(0, 10);
+const addDays = (s, n) => { const d = new Date(s + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return iso(d); };
+const pretty = (s, opts = { weekday: "long", day: "numeric", month: "numeric" }) => new Date(s + "T12:00:00").toLocaleDateString("cs-CZ", opts);
+const phone = (p) => p.replace(/^\+420(\d{3})(\d{3})(\d{3})$/, "$1 $2 $3");
+const pragueToday = () => new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Prague" }).format(new Date());
+let from = pragueToday();
+let data = null;
+
+async function api(a, body, q = "") {
+  const r = await fetch(`/api/admin?a=${a}${q}`, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
+  const j = await r.json().catch(() => ({}));
+  if (r.status === 401) { showLogin(); throw new Error(j.error); }
+  if (!r.ok) throw new Error(j.error || "Chyba spojení");
+  return j;
+}
+
+function showLogin() { $("app").hidden = true; $("logout").hidden = true; $("login").hidden = false; $("pw").focus(); }
+
+async function load() {
+  data = await api("overview", null, `&from=${from}&to=${addDays(from, 13)}`);
+  $("login").hidden = true; $("app").hidden = false; $("logout").hidden = false;
+  render();
+}
+
+function render() {
+  const d = data;
+  const warns = [];
+  if (!d.mailReady) warns.push("Není nastavený RESEND_API_KEY – e-maily se zatím neodesílají.");
+  if (!d.clinicEmail) warns.push("Není nastavený CLINIC_EMAIL – ordinaci nechodí rezervace e-mailem.");
+  $("warn").innerHTML = warns.join("<br>"); $("warn").hidden = !warns.length;
+  $("range").textContent = `${pretty(d.from, { day: "numeric", month: "numeric" })} – ${pretty(d.to, { day: "numeric", month: "numeric", year: "numeric" })}`;
+  $("feed").value = d.feedUrl;
+
+  const byDate = {};
+  d.bookings.forEach((b) => (byDate[b.date] ||= []).push(b));
+  const dates = new Set([...Object.keys(byDate), ...d.days.filter((x) => x.date >= d.from && x.date <= d.to).map((x) => x.date)]);
+  const html = [...dates].sort().map((date) => {
+    const list = (byDate[date] || []).sort((a, b) => a.start - b.start);
+    const day = d.days.find((x) => x.date === date);
+    const active = list.filter((b) => b.status === "active").length;
+    const shut = date in d.closed;
+    return `<div class="day-h ${shut ? "shut" : ""}"><h3>${esc(pretty(date))}</h3><span>${day ? esc(day.doctor) + " · " : ""}${active} objednaných${shut ? ' · <b style="color:var(--red)">ZAVŘENO</b>' : ""}</span></div>` +
+      (list.length ? `<table>${list.map((b) => `<tr class="${b.status === "cancelled" ? "cx" : ""}">
+        <td class="t">${esc(b.time)}</td>
+        <td><b>${esc(b.name)}</b>${b.birth ? ` <span class="sub">nar. ${esc(b.birth.split("-").reverse().join(". "))}</span>` : ""}
+          ${b.source === "ordinace" ? '<span class="tag">tel.</span>' : ""}${b.status === "cancelled" ? `<span class="tag red">zrušil(a) ${esc(b.cancelledBy)}</span>` : ""}
+          <div class="sub">${[b.phone && `<a href="tel:${esc(b.phone)}">${esc(phone(b.phone))}</a>`, b.email && esc(b.email), b.insurer && esc(b.insurer), b.type && esc(b.type)].filter(Boolean).join(" · ")}</div>
+          ${b.note ? `<div class="sub" style="color:var(--ink)">„${esc(b.note)}“</div>` : ""}</td>
+        <td style="text-align:right">${b.status === "active" ? `<button class="x" data-cancel="${esc(b.id)}" data-email="${b.email ? 1 : ""}">Zrušit</button>` : ""}</td></tr>`).join("")}</table>`
+      : `<p class="empty">Nikdo objednaný.</p>`);
+  }).join("");
+  $("list").innerHTML = html || '<p class="empty">V tomto období nejsou žádné ordinace pro objednané.</p>';
+
+  $("closedList").innerHTML = Object.entries(d.closed).sort().map(([date, note]) =>
+    `<li><span>${esc(pretty(date, { weekday: "short", day: "numeric", month: "numeric", year: "numeric" }))}${note ? " – " + esc(note) : ""}</span><button class="x" data-open="${date}">Zrušit</button></li>`).join("") || '<li class="empty">Žádné</li>';
+
+  const keep = $("a_date").value;
+  $("a_date").innerHTML = d.days.filter((x) => !x.closed).map((x) => `<option value="${x.date}">${esc(pretty(x.date, { weekday: "short", day: "numeric", month: "numeric" }))}</option>`).join("");
+  if (keep && [...$("a_date").options].some((o) => o.value === keep)) $("a_date").value = keep;
+  fillTimes();
+  if (!$("a_ins").options.length) {
+    $("a_ins").innerHTML = '<option value="">—</option>' + Object.entries(d.insurers).map(([k, v]) => `<option value="${k}">${k} ${esc(v)}</option>`).join("");
+    $("a_type").innerHTML = '<option value="">—</option>' + d.types.map((t) => `<option>${esc(t)}</option>`).join("");
+  }
+}
+
+function fillTimes() {
+  const day = data.days.find((x) => x.date === $("a_date").value);
+  // v administraci jdou zapsat i časy, které jsou na webu už „pozdě“, jen ne obsazené
+  $("a_time").innerHTML = day ? day.slots.filter((s) => !s.busy).map((s) => `<option>${s.t}</option>`).join("") : "";
+}
+
+$("a_date").addEventListener("change", fillTimes);
+$("prev").onclick = () => { from = addDays(from, -14); load(); };
+$("next").onclick = () => { from = addDays(from, 14); load(); };
+$("now").onclick = () => { from = pragueToday(); load(); };
+$("copy").onclick = () => { $("feed").select(); navigator.clipboard?.writeText($("feed").value); $("copy").textContent = "Zkopírováno"; };
+$("logout").onclick = async () => { await api("logout", {}); showLogin(); };
+
+$("login").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("lErr").hidden = true;
+  try { await api("login", { password: $("pw").value }); $("pw").value = ""; await load(); }
+  catch (x) { $("lErr").textContent = x.message; $("lErr").hidden = false; }
+});
+
+document.addEventListener("click", async (e) => {
+  const c = e.target.closest("[data-cancel]");
+  if (c) {
+    if (!confirm("Opravdu zrušit tuto rezervaci?")) return;
+    const notify = c.dataset.email ? confirm("Poslat pacientovi e-mail o zrušení?") : false;
+    c.disabled = true;
+    try { await api("cancel", { id: c.dataset.cancel, notify }); await load(); } catch (x) { alert(x.message); c.disabled = false; }
+  }
+  const o = e.target.closest("[data-open]");
+  if (o) { await api("open", { date: o.dataset.open }); await load(); }
+});
+
+$("closeForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try { await api("close", { date: $("c_date").value, note: $("c_note").value }); e.target.reset(); await load(); } catch (x) { alert(x.message); }
+});
+
+$("addForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const m = $("aMsg");
+  try {
+    await api("add", Object.fromEntries(new FormData(e.target)));
+    const keepDate = $("a_date").value;
+    e.target.reset();
+    $("a_date").value = keepDate;
+    m.className = "msg ok"; m.textContent = "Zapsáno.";
+    await load();
+  } catch (x) { m.className = "msg err"; m.textContent = x.message; }
+  m.hidden = false;
+});
+
+load().catch(() => { if ($("app").hidden) showLogin(); });
+</script>
+</body>
+</html>

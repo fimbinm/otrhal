@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>eRecept – ORTOHAL Krnov</title>
+<meta name="description" content="Žádost o elektronický recept bez návštěvy ortopedické ambulance ORTOHAL v Krnově.">
+<link rel="icon" href="/img/znak.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  .er{display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); gap:64px; padding-top:56px; padding-bottom:96px; align-items:start}
+  @media (max-width:900px){.er{grid-template-columns:1fr; gap:36px; padding-top:36px}}
+  .er aside{border-left:3px solid var(--blue); padding:4px 0 4px 24px; color:var(--ink-soft)}
+  .er aside h3{color:var(--blue-ink)}
+  .er aside ol{padding-left:20px}
+</style>
+</head>
+<body>
+
+<div class="topline">
+  <div class="wrap">
+    <span><a href="tel:+420554611766">554 611 766</a> &nbsp;·&nbsp; <a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></span>
+    <span class="addr">Poliklinika Krnov, Náměstí Hrdinů 8</span>
+  </div>
+</div>
+
+<header class="site-head">
+  <div class="wrap">
+    <a href="/" class="brand" aria-label="ORTOHAL Krnov – úvod">
+      <img src="/img/znak.png" alt="" width="54" height="54">
+      <span class="brand-txt">ORTOHAL<small>KRNOV</small></span>
+    </a>
+    <button class="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav"><i></i><i></i><i></i></button>
+    <nav class="nav" id="nav">
+      <a href="/#hodiny">Ordinační hodiny</a>
+      <a href="/#sluzby">Služby</a>
+      <a href="/#lekari">Lékaři</a>
+      <a href="/#cenik">Ceník</a>
+      <a href="/erecept">eRecept</a>
+      <a href="/#kontakt">Kontakt</a>
+      <a href="/rezervace" class="btn btn-red">Objednat se</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="page-head">
+  <div class="wrap">
+    <p class="kicker">eRecept</p>
+    <h1>Recept bez návštěvy ordinace</h1>
+    <p>Lék, který vám u nás už lékař předepsal, vám můžeme poslat jako elektronický recept. Žádost vyřídíme v nejbližší ordinační den.</p>
+  </div>
+</div>
+<div class="wrap er">
+  <div>
+    <div class="msg" id="eMsg" hidden></div>
+    <form id="erForm" novalidate>
+      <div class="row2">
+        <div class="field"><label for="e_name">Jméno a příjmení pacienta</label><input id="e_name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="e_birth">Datum narození</label><input id="e_birth" name="birth" type="date" min="1900-01-01" required></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="e_phone">Mobil pro SMS s receptem</label><input id="e_phone" name="phone" type="tel" autocomplete="tel" placeholder="777 123 456" required></div>
+        <div class="field"><label for="e_email">E-mail <span style="text-transform:none;letter-spacing:0;color:var(--ink-soft)">(nepovinné)</span></label><input id="e_email" name="email" type="email" autocomplete="email"></div>
+      </div>
+      <div class="field"><label for="e_drug">Název léku a dávkování</label><input id="e_drug" name="drug" placeholder="např. Ibalgin 400 mg, 1 balení" required></div>
+      <div class="field"><label for="e_doc">Ošetřující lékař</label>
+        <select id="e_doc" name="doctor">
+          <option value="">Nevím / je to jedno</option>
+          <option value="halir">MUDr. Miroslav Halíř</option>
+          <option value="kocian">MUDr. Rostislav Kocián</option>
+          <option value="zapalac">MUDr. Karel Zapalač</option>
+        </select>
+      </div>
+      <div class="field"><label for="e_note">Poznámka <span style="text-transform:none;letter-spacing:0;color:var(--ink-soft)">(nepovinné)</span></label><textarea id="e_note" name="note" rows="3" maxlength="1000"></textarea></div>
+      <div class="hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
+      <label class="check"><input type="checkbox" name="consent" required> <span>Souhlasím se <a href="/ochrana-osobnich-udaju" target="_blank">zpracováním osobních údajů</a> za účelem vyřízení žádosti o eRecept.</span></label>
+      <button class="btn btn-red" type="submit">Odeslat žádost</button>
+    </form>
+  </div>
+  <aside>
+    <h3>Jak to funguje</h3>
+    <ol>
+      <li>Vyplníte žádost – stačí jednou.</li>
+      <li>Lékař ji zkontroluje v nejbližší ordinační den.</li>
+      <li>Kód eReceptu vám přijde SMS na uvedený mobil, s ním si lék vyzvednete v kterékoli lékárně.</li>
+    </ol>
+    <p>Nový lék, který jste u nás ještě nedostali, lékař bez vyšetření předepsat nemůže. V takovém případě přijďte v ordinačních hodinách nebo se <a href="/rezervace">objednejte</a>.</p>
+  </aside>
+</div>
+<script src="/js/site.js"></script>
+<script>
+document.getElementById("e_birth").max = new Date().toISOString().slice(0, 10);
+ORTOHAL.form("erForm", "erecept", "eMsg", "Žádost jsme přijali. Kód eReceptu vám pošleme SMS po vyřízení lékařem.");
+</script>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">ORTOHAL <span>KRNOV</span></div>
+        <p>Ortopedická ambulance na poliklinice v Krnově. Ortopedie a traumatologie pohybového ústrojí pro dospělé i děti.</p>
+      </div>
+      <div>
+        <h4>Ambulance</h4>
+        <ul>
+          <li><a href="/#hodiny">Ordinační hodiny</a></li>
+          <li><a href="/#sluzby">Služby</a></li>
+          <li><a href="/#lekari">Lékaři</a></li>
+          <li><a href="/#cenik">Ceník</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Online</h4>
+        <ul>
+          <li><a href="/rezervace">Objednání</a></li>
+          <li><a href="/erecept">eRecept</a></li>
+          <li><a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="tel:+420554611766">554 611 766</a></li>
+          <li><a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></li>
+          <li>Náměstí Hrdinů 8, Krnov</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span class="year">2026</span> ORTOHAL s.r.o. · IČ 06771742 · C 73173 vedená u Krajského soudu v Ostravě</span>
+      <span>Jednatel a odborný zástupce MUDr. Miroslav Halíř</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

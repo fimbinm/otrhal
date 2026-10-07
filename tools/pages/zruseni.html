@@ -1,0 +1,37 @@
+<!--title:Zrušení termínu – ORTOHAL Krnov-->
+<!--desc:Zrušení objednaného termínu v ortopedické ambulanci ORTOHAL Krnov.-->
+<div class="wrap" style="max-width:640px; padding-top:72px; padding-bottom:110px">
+  <p class="kicker">Zrušení termínu</p>
+  <h1 style="font-size:clamp(30px,4vw,44px)" id="zTitle">Načítám rezervaci…</h1>
+  <p id="zText" style="color:var(--ink-soft)"></p>
+  <div class="msg" id="zMsg" hidden></div>
+  <div id="zActions" hidden style="display:flex; gap:12px; flex-wrap:wrap; margin-top:24px">
+    <button class="btn btn-red" id="zBtn">Ano, termín zrušit</button>
+    <a class="btn btn-line" href="/">Ponechat termín</a>
+  </div>
+</div>
+<script src="/js/site.js"></script>
+<script>
+const id = new URLSearchParams(location.search).get("id") || "";
+const $ = (x) => document.getElementById(x);
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+function show(title, text) { $("zTitle").textContent = title; $("zText").textContent = text; }
+ORTOHAL.api(`/api/booking?a=booking&id=${encodeURIComponent(id)}`).then((b) => {
+  if (b.status === "cancelled") return show("Termín je už zrušený", `${cap(b.when)} · ${b.doctor}`);
+  if (b.past) return show("Termín už proběhl", `${cap(b.when)} · ${b.doctor}`);
+  show(cap(b.when), `${b.doctor} · Poliklinika Krnov. Opravdu chcete termín zrušit? Uvolní se pro další pacienty.`);
+  $("zActions").hidden = false;
+  $("zActions").style.display = "flex";
+}).catch((e) => show("Rezervaci jsme nenašli", e.message + " V případě potřeby volejte 554 611 766."));
+$("zBtn").addEventListener("click", async () => {
+  $("zBtn").disabled = true;
+  try {
+    await ORTOHAL.api("/api/booking?a=cancel", { id });
+    $("zActions").style.display = "none";
+    show("Termín je zrušený", "Děkujeme, že jste dali vědět. Potvrzení jsme poslali e-mailem.");
+    $("zMsg").hidden = true;
+  } catch (e) {
+    $("zMsg").className = "msg err"; $("zMsg").textContent = e.message; $("zMsg").hidden = false; $("zBtn").disabled = false;
+  }
+});
+</script>

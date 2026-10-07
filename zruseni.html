@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zrušení termínu – ORTOHAL Krnov</title>
+<meta name="description" content="Zrušení objednaného termínu v ortopedické ambulanci ORTOHAL Krnov.">
+<link rel="icon" href="/img/znak.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+
+</head>
+<body>
+
+<div class="topline">
+  <div class="wrap">
+    <span><a href="tel:+420554611766">554 611 766</a> &nbsp;·&nbsp; <a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></span>
+    <span class="addr">Poliklinika Krnov, Náměstí Hrdinů 8</span>
+  </div>
+</div>
+
+<header class="site-head">
+  <div class="wrap">
+    <a href="/" class="brand" aria-label="ORTOHAL Krnov – úvod">
+      <img src="/img/znak.png" alt="" width="54" height="54">
+      <span class="brand-txt">ORTOHAL<small>KRNOV</small></span>
+    </a>
+    <button class="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav"><i></i><i></i><i></i></button>
+    <nav class="nav" id="nav">
+      <a href="/#hodiny">Ordinační hodiny</a>
+      <a href="/#sluzby">Služby</a>
+      <a href="/#lekari">Lékaři</a>
+      <a href="/#cenik">Ceník</a>
+      <a href="/erecept">eRecept</a>
+      <a href="/#kontakt">Kontakt</a>
+      <a href="/rezervace" class="btn btn-red">Objednat se</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap" style="max-width:640px; padding-top:72px; padding-bottom:110px">
+  <p class="kicker">Zrušení termínu</p>
+  <h1 style="font-size:clamp(30px,4vw,44px)" id="zTitle">Načítám rezervaci…</h1>
+  <p id="zText" style="color:var(--ink-soft)"></p>
+  <div class="msg" id="zMsg" hidden></div>
+  <div id="zActions" hidden style="display:flex; gap:12px; flex-wrap:wrap; margin-top:24px">
+    <button class="btn btn-red" id="zBtn">Ano, termín zrušit</button>
+    <a class="btn btn-line" href="/">Ponechat termín</a>
+  </div>
+</div>
+<script src="/js/site.js"></script>
+<script>
+const id = new URLSearchParams(location.search).get("id") || "";
+const $ = (x) => document.getElementById(x);
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+function show(title, text) { $("zTitle").textContent = title; $("zText").textContent = text; }
+ORTOHAL.api(`/api/booking?a=booking&id=${encodeURIComponent(id)}`).then((b) => {
+  if (b.status === "cancelled") return show("Termín je už zrušený", `${cap(b.when)} · ${b.doctor}`);
+  if (b.past) return show("Termín už proběhl", `${cap(b.when)} · ${b.doctor}`);
+  show(cap(b.when), `${b.doctor} · Poliklinika Krnov. Opravdu chcete termín zrušit? Uvolní se pro další pacienty.`);
+  $("zActions").hidden = false;
+  $("zActions").style.display = "flex";
+}).catch((e) => show("Rezervaci jsme nenašli", e.message + " V případě potřeby volejte 554 611 766."));
+$("zBtn").addEventListener("click", async () => {
+  $("zBtn").disabled = true;
+  try {
+    await ORTOHAL.api("/api/booking?a=cancel", { id });
+    $("zActions").style.display = "none";
+    show("Termín je zrušený", "Děkujeme, že jste dali vědět. Potvrzení jsme poslali e-mailem.");
+    $("zMsg").hidden = true;
+  } catch (e) {
+    $("zMsg").className = "msg err"; $("zMsg").textContent = e.message; $("zMsg").hidden = false; $("zBtn").disabled = false;
+  }
+});
+</script>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">ORTOHAL <span>KRNOV</span></div>
+        <p>Ortopedická ambulance na poliklinice v Krnově. Ortopedie a traumatologie pohybového ústrojí pro dospělé i děti.</p>
+      </div>
+      <div>
+        <h4>Ambulance</h4>
+        <ul>
+          <li><a href="/#hodiny">Ordinační hodiny</a></li>
+          <li><a href="/#sluzby">Služby</a></li>
+          <li><a href="/#lekari">Lékaři</a></li>
+          <li><a href="/#cenik">Ceník</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Online</h4>
+        <ul>
+          <li><a href="/rezervace">Objednání</a></li>
+          <li><a href="/erecept">eRecept</a></li>
+          <li><a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="tel:+420554611766">554 611 766</a></li>
+          <li><a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></li>
+          <li>Náměstí Hrdinů 8, Krnov</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span class="year">2026</span> ORTOHAL s.r.o. · IČ 06771742 · C 73173 vedená u Krajského soudu v Ostravě</span>
+      <span>Jednatel a odborný zástupce MUDr. Miroslav Halíř</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

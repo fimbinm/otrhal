@@ -2,970 +2,651 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ORTOHAL s.r.o. — Ortopedická ambulance Krnov</title>
-<meta name="description" content="Ortopedická ambulance ORTOHAL s.r.o. v Krnově. MUDr. Miroslav Halíř a kolektiv. Diagnostika, léčba a rehabilitace pohybového aparátu.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ORTOHAL Krnov – ortopedická ambulance na poliklinice</title>
+<meta name="description" content="Ortopedická ambulance ORTOHAL s.r.o. na poliklinice v Krnově. MUDr. Miroslav Halíř, MUDr. Rostislav Kocián, MUDr. Karel Zapalač. Ordinační hodiny, online objednání, rázová vlna, sonografie dětských kyčlí.">
+<meta property="og:title" content="ORTOHAL Krnov – ortopedická ambulance">
+<meta property="og:description" content="Ortopedie na poliklinice v Krnově. Ordinační hodiny a online objednání.">
+<meta property="og:image" content="/img/poliklinika.jpg">
+<link rel="icon" href="/img/znak.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
 <style>
-  :root{
-    --blue:#1B3A8C;
-    --blue-deep:#122870;
-    --blue-pale:#EAF0FB;
-    --ice:#F5F8FD;
-    --line:#D5DFF0;
-    --red:#C0272D;
-    --red-pale:#FAEAEA;
-    --red-mid:#E8A0A2;
-    --ink:#111827;
-    --ink-soft:#4B5A72;
-    --white:#FFFFFF;
-    --r:6px;
+  /* úvod */
+  .hero{position:relative; overflow:hidden; border-bottom:1px solid var(--line)}
+  .hero .wrap{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr); gap:56px; align-items:center; padding-top:72px; padding-bottom:80px; position:relative}
+  @media (max-width:900px){.hero .wrap{grid-template-columns:1fr; gap:36px; padding-top:40px; padding-bottom:48px}}
+  .hero-arc{position:absolute; right:-160px; top:50%; width:720px; height:720px; transform:translateY(-50%); pointer-events:none; opacity:.9}
+  @media (max-width:900px){.hero-arc{right:-320px; top:24%; opacity:.45}}
+  .hero h1{max-width:12em}
+  .hero h1 em{font-style:normal; color:var(--red)}
+  .hero .lead{font-size:19px; color:var(--ink-soft); max-width:34em; margin-bottom:32px}
+  .hero-actions{display:flex; gap:12px; flex-wrap:wrap}
+  .hero-note{margin-top:22px; font-size:15px; color:var(--ink-soft)}
+
+  .today{position:relative; background:#fff; border:1px solid var(--line-strong); border-radius:var(--r); padding:28px 28px 22px}
+  .today::before{content:""; position:absolute; left:-1px; top:-1px; bottom:-1px; width:4px; background:var(--blue)}
+  .today.closed::before{background:var(--line-strong)}
+  .today-top{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:6px}
+  .today-day{font:500 12.5px/1 var(--head); letter-spacing:.28em; text-transform:uppercase; color:var(--ink-soft)}
+  .today-state{display:inline-flex; align-items:center; gap:8px; font:500 14px/1 var(--head); letter-spacing:.06em}
+  .today-state i{width:9px; height:9px; border-radius:50%; background:var(--line-strong)}
+  .today-state.open i{background:#2E9B4F; box-shadow:0 0 0 4px rgba(46,155,79,.15)}
+  .today-state.open{color:#227A3D}
+  .today h3{font-size:24px; font-weight:400; margin:10px 0 16px}
+  .today ul{list-style:none; margin:0; padding:0}
+  .today li{display:flex; justify-content:space-between; gap:16px; padding:10px 0; border-top:1px solid var(--line); font-size:16px}
+  .today li b{font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .today li span{color:var(--ink-soft); text-align:right}
+  .today li.booked span{color:var(--red)}
+  .today li.past{opacity:.45}
+  .today-foot{margin-top:14px; font-size:14.5px; color:var(--ink-soft)}
+
+  /* týden */
+  .week{border-top:1px solid var(--line-strong)}
+  .wk-row{display:grid; grid-template-columns:150px minmax(0,1fr); gap:24px; padding:22px 0; border-bottom:1px solid var(--line); align-items:center}
+  .wk-row.is-today{background:linear-gradient(90deg, var(--blue-pale), transparent 70%); margin:0 -24px; padding-left:24px; padding-right:24px}
+  @media (max-width:700px){.track .bar{font-size:0; padding:0} .wk-row{grid-template-columns:1fr; gap:10px} .wk-row.is-today{margin:0 -16px; padding-left:16px; padding-right:16px}}
+  .wk-day{font:400 24px/1.1 var(--head); color:var(--blue-ink)}
+  .wk-day small{display:block; margin-top:6px; font:400 15px/1.3 var(--body); color:var(--ink-soft)}
+  .track{position:relative; height:38px; background:repeating-linear-gradient(90deg, transparent 0 calc(100%/11 - 1px), var(--line) calc(100%/11 - 1px) calc(100%/11)); border-left:1px solid var(--line)}
+  .bar{position:absolute; top:5px; bottom:5px; border-radius:2px; display:flex; align-items:center; padding:0 10px; font:500 13px/1 var(--head); letter-spacing:.03em; white-space:nowrap; overflow:hidden}
+  .bar.walk{background:var(--blue); color:#fff}
+  .bar.book{background:repeating-linear-gradient(135deg, var(--red) 0 7px, #CF3C42 7px 14px); color:#fff}
+  .bar.pause{background:transparent; border:1px dashed var(--line-strong); top:11px; bottom:11px}
+  .now{position:absolute; top:-6px; bottom:-6px; width:2px; background:var(--ink); z-index:2}
+  .now::after{content:"teď"; position:absolute; top:-18px; left:50%; transform:translateX(-50%); font:500 11px/1 var(--head); letter-spacing:.1em; text-transform:uppercase}
+  .axis{display:grid; grid-template-columns:150px minmax(0,1fr); gap:24px; padding-top:10px; font-size:13px; color:var(--ink-soft)}
+  .axis div{display:flex; justify-content:space-between; font-variant-numeric:tabular-nums}
+  @media (max-width:700px){.axis{grid-template-columns:1fr} .axis>span{display:none} .axis div span:nth-child(even){visibility:hidden}}
+  .wk-txt{margin-top:8px; font-size:15px; color:var(--ink-soft)}
+  .wk-txt b{color:var(--ink); font-weight:600}
+  .wk-txt .r{color:var(--red); font-weight:600}
+  .wk-empty{font-size:16px; color:var(--ink-soft); font-style:italic}
+  .legend{display:flex; gap:12px 28px; flex-wrap:wrap; margin-top:28px; font-size:15px; color:var(--ink-soft)}
+  .legend span{display:inline-flex; align-items:center; gap:10px}
+  .legend i{width:28px; height:12px; border-radius:2px}
+  .rules{margin-top:40px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; border:1px solid var(--line-strong)}
+  .rules div{padding:24px 26px; border-left:1px solid var(--line)}
+  .rules div:first-child{border-left:0}
+  .rules h3{font-size:18px; margin-bottom:8px}
+  .rules p{font-size:15.5px; color:var(--ink-soft); margin:0}
+  @media (max-width:860px){.rules{grid-template-columns:1fr} .rules div{border-left:0; border-top:1px solid var(--line)} .rules div:first-child{border-top:0}}
+
+  /* služby */
+  .svc{display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:64px; align-items:start}
+  @media (max-width:960px){.svc{grid-template-columns:1fr; gap:40px}}
+  .svc-list{border-top:1px solid var(--line-strong); counter-reset:svc}
+  .svc-list details{border-bottom:1px solid var(--line); counter-increment:svc}
+  .svc-list summary{list-style:none; cursor:pointer; display:grid; grid-template-columns:52px minmax(0,1fr) 24px; gap:8px; align-items:baseline; padding:22px 0}
+  .svc-list summary::-webkit-details-marker{display:none}
+  .svc-list summary::before{content:counter(svc, decimal-leading-zero); font:400 15px/1 var(--head); color:var(--red); letter-spacing:.08em}
+  .svc-list summary h3{margin:0; font-size:22px; font-weight:400}
+  .svc-list summary p{grid-column:2; margin:6px 0 0; color:var(--ink-soft); font-size:16px}
+  .svc-list summary::after{content:""; grid-column:3; grid-row:1; width:12px; height:12px; border-right:1.5px solid var(--blue); border-bottom:1.5px solid var(--blue); transform:rotate(45deg); justify-self:end; transition:transform .2s}
+  .svc-list details[open] summary::after{transform:rotate(-135deg)}
+  .svc-list summary:hover h3{color:var(--blue)}
+  .svc-body{padding:0 0 26px 60px; font-size:16.5px; color:var(--ink)}
+  @media (max-width:560px){.svc-body{padding-left:0}}
+  .svc-body ul{margin:0 0 1em; padding-left:20px}
+  .svc-body .price{display:inline-block; margin-top:4px; font:500 15px/1 var(--head); letter-spacing:.04em; color:var(--blue-ink); background:var(--blue-pale); padding:8px 12px; border-radius:2px}
+  .svc-aside figure{margin:0}
+  .svc-aside img{width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:var(--r); filter:saturate(.9)}
+  .svc-aside figcaption{font-size:14.5px; color:var(--ink-soft); margin-top:10px}
+  .svc-aside .box{margin-top:28px; padding:24px; border:1px solid var(--line-strong); border-radius:var(--r)}
+  .svc-aside .box h3{font-size:19px}
+  .svc-aside .box p{font-size:15.5px; color:var(--ink-soft)}
+
+  /* lékaři */
+  .docs{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:32px}
+  @media (max-width:900px){.docs{grid-template-columns:1fr; gap:48px}}
+  .doc img{width:100%; aspect-ratio:4/3.4; object-fit:cover; object-position:50% 30%; border-radius:var(--r); background:var(--paper)}
+  .doc .when{margin:18px 0 6px; font:500 12.5px/1 var(--head); letter-spacing:.24em; text-transform:uppercase; color:var(--red)}
+  .doc h3{font-size:25px; font-weight:400; margin:0 0 4px}
+  .doc .role{color:var(--ink-soft); font-size:15.5px; margin-bottom:14px}
+  .doc details{border-top:1px solid var(--line)}
+  .doc summary{cursor:pointer; padding:12px 0; font:500 13px/1 var(--head); letter-spacing:.14em; text-transform:uppercase; color:var(--blue)}
+  .doc dl{margin:0 0 6px; font-size:15.5px}
+  .doc dt{font:500 12px/1 var(--head); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin:12px 0 6px}
+  .doc dd{margin:0 0 4px}
+
+  /* ordinace / fotky */
+  .place{display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px}
+  .place figure{margin:0; position:relative}
+  .place img{width:100%; height:100%; object-fit:cover; border-radius:var(--r)}
+  .place figcaption{position:absolute; left:12px; bottom:12px; background:rgba(13,31,92,.86); color:#fff; font:400 13.5px/1.2 var(--head); letter-spacing:.06em; padding:8px 12px; border-radius:2px}
+  .place .p1{grid-column:span 7; aspect-ratio:3/2}
+  .place .p2{grid-column:span 5}
+  .place .p3{grid-column:span 5}
+  .place .p4{grid-column:span 7; aspect-ratio:3/2}
+  @media (max-width:760px){.place .p1,.place .p2,.place .p3,.place .p4{grid-column:span 12; aspect-ratio:3/2}}
+  .about-txt{columns:2 320px; column-gap:56px; color:var(--ink-soft); margin-top:44px}
+
+  /* ceník + pojišťovny */
+  .two{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:64px}
+  @media (max-width:860px){.two{grid-template-columns:1fr; gap:56px}}
+  table.price{width:100%; border-collapse:collapse; font-size:17px}
+  table.price td{padding:16px 0; border-bottom:1px solid var(--line); vertical-align:baseline}
+  table.price td:last-child{text-align:right; white-space:nowrap; font:500 19px/1 var(--head); color:var(--blue-ink); padding-left:20px}
+  table.price tr:first-child td{border-top:1px solid var(--line-strong)}
+  .ins{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); border-top:1px solid var(--line-strong); border-left:1px solid var(--line)}
+  .ins div{padding:16px 18px; border-right:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .ins b{display:block; font:400 26px/1 var(--head); color:var(--blue-ink); margin-bottom:6px}
+  .ins span{font-size:15px; color:var(--ink-soft)}
+
+  /* kontakt */
+  .contact{display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:64px}
+  @media (max-width:900px){.contact{grid-template-columns:1fr; gap:48px}}
+  .c-list{list-style:none; margin:0 0 28px; padding:0; border-top:1px solid var(--line-strong)}
+  .c-list li{display:grid; grid-template-columns:120px minmax(0,1fr); gap:16px; padding:16px 0; border-bottom:1px solid var(--line)}
+  .c-list li>span{font:500 12.5px/1.6 var(--head); letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft)}
+  .c-list a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line-strong)}
+  .c-list a:hover{color:var(--blue); border-color:var(--blue)}
+  .c-list .big{font:400 24px/1.2 var(--head); border:0}
+  .map-links{display:flex; gap:10px; flex-wrap:wrap}
+  .form-box{background:var(--paper); border:1px solid var(--line); border-radius:var(--r); padding:36px}
+  @media (max-width:560px){.form-box{padding:24px 18px}}
+
+  /* plovoucí tlačítko na mobilu */
+  .fab{display:none}
+  @media (max-width:700px){
+    .fab{display:flex; position:fixed; left:16px; right:16px; bottom:14px; z-index:30; box-shadow:0 10px 30px -10px rgba(13,31,92,.55); transition:transform .25s, opacity .25s}
+    .fab.hide{transform:translateY(120%); opacity:0; pointer-events:none}
+    body{padding-bottom:84px}
   }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    font-family:'Inter', sans-serif;
-    background:var(--white);
-    color:var(--ink);
-    line-height:1.65;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3,h4{
-    font-family:'Source Serif 4', serif;
-    font-weight:600;
-    color:var(--blue-deep);
-    line-height:1.2;
-    margin:0 0 .5em 0;
-  }
-  a{color:inherit; text-decoration:none;}
-  img{max-width:100%; display:block;}
-  .wrap{max-width:1100px; margin:0 auto; padding:0 24px;}
-  button{font-family:inherit; cursor:pointer;}
-  ::selection{background:var(--blue-pale);}
-
-  .topbar{background:#0D1F5C; color:rgba(255,255,255,.85); font-size:13px;}
-  .topbar .wrap{display:flex; justify-content:space-between; align-items:center; padding:8px 24px; flex-wrap:wrap; gap:6px;}
-  .topbar a{color:#fff;}
-  .topbar a:hover{text-decoration:underline;}
-  .topbar-left{display:flex; gap:20px; flex-wrap:wrap;}
-  .topbar-left span{display:inline-flex; align-items:center; gap:6px;}
-
-  header.site{background:#fff; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:50;}
-  .nav-row{display:flex; align-items:center; justify-content:space-between; padding:6px 0;}
-  .brand{display:flex; align-items:center; gap:0;}
-  
-  .brand-name{font-family:'Source Serif 4', serif; font-weight:600; font-size:18px; color:var(--blue-deep);}
-  .brand-sub{font-size:11px; color:var(--ink-soft); letter-spacing:.04em;}
-
-  nav.main{display:flex; align-items:center; gap:2px;}
-  nav.main a{padding:9px 13px; font-size:14px; font-weight:500; color:var(--ink); border-radius:var(--r);}
-  nav.main a:hover{color:var(--blue-deep); background:var(--blue-pale);}
-  .nav-cta{background:var(--red); color:#fff !important; padding:10px 18px; font-weight:600; font-size:13.5px; border-radius:var(--r); margin-left:6px; white-space:nowrap;}
-  .nav-cta:hover{background:#9b1e22;}
-  .menu-toggle{display:none; background:none; border:none; padding:8px;}
-  .menu-toggle span, .menu-toggle span::before, .menu-toggle span::after{content:""; display:block; width:22px; height:2px; background:var(--blue-deep); position:relative;}
-  .menu-toggle span::before{position:absolute; top:-7px;}
-  .menu-toggle span::after{position:absolute; top:7px;}
-  @media (max-width:900px){
-    nav.main{display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border-bottom:1px solid var(--line); flex-direction:column; align-items:stretch; padding:8px 20px 16px;}
-    nav.main.open{display:flex;}
-    .nav-cta{margin:8px 0 0;}
-    .menu-toggle{display:block;}
-  }
-
-  .notice{background:#FBEEEC; border-bottom:1px solid #F0CFC9;}
-  .notice .wrap{padding:9px 24px; font-size:13px; color:#8A2E22; display:flex; gap:8px; flex-wrap:wrap;}
-  .notice strong{font-weight:700;}
-
-  .hero{background:var(--ice); border-bottom:1px solid var(--line);}
-  .hero-inner{max-width:1100px; margin:0 auto; padding:64px 24px 56px; display:grid; grid-template-columns:1.15fr .85fr; gap:48px; align-items:center;}
-  @media (max-width:880px){.hero-inner{grid-template-columns:1fr; padding:48px 24px;}}
-  .eyebrow{text-transform:uppercase; letter-spacing:.1em; font-size:12px; color:var(--red); font-weight:700; margin-bottom:16px; display:block;}
-  .hero h1{font-size:clamp(30px,4.4vw,46px); margin-bottom:18px;}
-  .hero p.lead{color:var(--ink-soft); font-size:16.5px; max-width:520px; margin-bottom:30px;}
-  .hero-actions{display:flex; gap:12px; flex-wrap:wrap;}
-  .btn{display:inline-flex; align-items:center; gap:8px; padding:13px 24px; border-radius:var(--r); font-weight:600; font-size:14.5px; border:1.5px solid transparent;}
-  .btn-primary{background:var(--red); color:#fff;}
-  .btn-primary:hover{background:#9b1e22;}
-  .btn-outline{border-color:var(--line); color:var(--blue-deep); background:#fff;}
-  .btn-outline:hover{border-color:var(--blue);}
-
-  .hero-card{background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:26px; box-shadow:0 18px 40px -24px rgba(28,65,112,.25);}
-  .hero-card h3{font-size:15px; margin-bottom:14px;}
-  .hero-card .row{display:flex; justify-content:space-between; padding:10px 0; font-size:13.5px; border-top:1px solid var(--line);}
-  .hero-card .row:first-of-type{border-top:none;}
-  .hero-card .row span:first-child{color:var(--ink-soft);}
-  .hero-card .row span:last-child{font-weight:600; color:var(--blue-deep); text-align:right;}
-
-  section{padding:64px 0;}
-  .section-head{max-width:620px; margin:0 auto 40px; text-align:center;}
-  .section-head.left{text-align:left; margin:0 0 36px;}
-  .section-head h2{font-size:clamp(24px,3vw,32px);}
-  .section-head p{color:var(--ink-soft); font-size:15px; margin-top:8px;}
-  .tag{display:inline-block; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--blue); margin-bottom:10px;}
-  .tag-r{color:var(--red) !important;}
-  .alt{background:var(--ice); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
-
-  .lead-grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:48px; align-items:start;}
-  @media (max-width:880px){.lead-grid{grid-template-columns:1fr;}}
-  .lead-grid p{color:var(--ink-soft); font-size:15px;}
-  .stat-row{display:flex; gap:28px; margin-top:26px; flex-wrap:wrap;}
-  .stat{border-left:2px solid var(--blue); padding-left:14px;}
-  .stat b{display:block; font-family:'Source Serif 4',serif; font-size:24px; color:var(--blue-deep);}
-  .stat span{font-size:12.5px; color:var(--ink-soft);}
-
-  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
-  .grid2{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
-  @media (max-width:880px){.grid3{grid-template-columns:1fr 1fr;} .grid2{grid-template-columns:1fr;}}
-  @media (max-width:600px){.grid3{grid-template-columns:1fr;}}
-
-  .svc-card{background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:24px; transition:.15s border-color, .15s box-shadow;}
-  .svc-card:hover{border-color:var(--blue); box-shadow:0 10px 26px -18px rgba(28,65,112,.35);}
-  .svc-icon{width:42px; height:42px; border-radius:50%; background:var(--blue-pale); display:flex; align-items:center; justify-content:center; color:var(--blue); margin-bottom:14px;}
-  .svc-card h3{font-size:16.5px; margin-bottom:8px;}
-  .svc-card p{font-size:13.5px; color:var(--ink-soft); margin:0;}
-
-  table.hours{width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:var(--r); overflow:hidden;}
-  table.hours th, table.hours td{padding:15px 18px; font-size:13.5px; text-align:left; vertical-align:top;}
-  table.hours thead th{background:var(--blue-deep); color:#fff; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.05em;}
-  table.hours tbody tr{border-top:1px solid var(--line);}
-  table.hours tbody tr:hover{background:var(--ice);}
-  table.hours .day{font-family:'Source Serif 4',serif; font-weight:600; color:var(--blue-deep); font-size:14.5px; white-space:nowrap;}
-  table.hours .doc{display:block; font-weight:400; font-size:12px; color:var(--ink-soft); margin-top:2px;}
-  table.hours .note{display:block; font-size:11.5px; color:var(--red); margin-top:3px;}
-
-  table.cenik{width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:var(--r); overflow:hidden;}
-  table.cenik th, table.cenik td{padding:15px 18px; font-size:14px; text-align:left;}
-  table.cenik thead th{background:var(--blue-deep); color:#fff; font-size:12px; text-transform:uppercase; letter-spacing:.05em; font-weight:600;}
-  table.cenik tbody tr{border-top:1px solid var(--line);}
-  table.cenik tbody tr:hover{background:var(--ice);}
-  table.cenik td.price{font-weight:700; color:var(--blue-deep); text-align:right; white-space:nowrap;}
-
-  .doc-card{background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:28px; margin-bottom:18px; display:grid; grid-template-columns:84px 1fr; gap:22px;}
-  @media (max-width:600px){.doc-card{grid-template-columns:1fr;}}
-  .doc-avatar{width:84px; height:84px; border-radius:50%; background:var(--blue-pale); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-family:'Source Serif 4',serif; font-size:22px; color:var(--blue-deep);}
-  .doc-card h3{font-size:18px; margin-bottom:3px;}
-  .doc-role{color:var(--blue); font-size:12.5px; font-weight:600; margin-bottom:14px; display:block;}
-  .doc-cols{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:10px;}
-  @media (max-width:560px){.doc-cols{grid-template-columns:1fr;}}
-  .doc-cols h5{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin:0 0 7px;}
-  .doc-cols ul{margin:0; padding-left:16px; font-size:13px; color:var(--ink);}
-  .doc-cols li{margin-bottom:4px;}
-
-  .gallery-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
-  @media (max-width:700px){.gallery-grid{grid-template-columns:1fr 1fr;}}
-  .gallery-item{aspect-ratio:4/3; background:var(--blue-pale); border:1px dashed var(--line); border-radius:var(--r); display:flex; align-items:center; justify-content:center; color:var(--ink-soft); font-size:12px; text-align:center; padding:10px;}
-
-  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:44px; align-items:start;}
-  @media (max-width:880px){.contact-grid{grid-template-columns:1fr;}}
-  .info-row{display:flex; gap:14px; margin-bottom:20px;}
-  .info-icon{width:38px; height:38px; border-radius:50%; background:var(--blue-pale); border:1px solid var(--line); flex-shrink:0; display:flex; align-items:center; justify-content:center; color:var(--blue);}
-  .info-row h4{font-size:14px; margin-bottom:3px;}
-  .info-row p{margin:0; font-size:13.5px; color:var(--ink-soft);}
-  .map-frame{width:100%; height:300px; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; margin-top:6px;}
-  .map-frame iframe{width:100%; height:100%; border:0;}
-
-  .form-card{background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:30px;}
-  .field{margin-bottom:16px;}
-  .field label{display:block; font-size:12.5px; font-weight:600; color:var(--blue-deep); margin-bottom:6px;}
-  .field input, .field select, .field textarea{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:var(--r); font-family:inherit; font-size:14px; background:var(--ice); color:var(--ink);}
-  .field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--blue); background:#fff;}
-  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  @media (max-width:520px){.field-row{grid-template-columns:1fr;}}
-  .checkbox-row{display:flex; gap:9px; align-items:flex-start; font-size:12.5px; color:var(--ink-soft); margin-bottom:20px;}
-  .checkbox-row input{width:auto; margin-top:3px;}
-  .success-box{background:#EAF5EC; border:1px solid #BFE0C4; color:#2C6B36; padding:14px 16px; border-radius:var(--r); font-size:13.5px; margin-bottom:16px; display:none;}
-  .success-box.show{display:block;}
-
-  .day-tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px;}
-  .day-tab{padding:9px 14px; border:1px solid var(--line); border-radius:var(--r); font-size:13px; font-weight:600; background:#fff; color:var(--ink-soft);}
-  .day-tab.active{background:var(--blue); border-color:var(--blue); color:#fff;}
-  .slot-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(82px,1fr)); gap:9px; margin:14px 0 22px;}
-  .slot{border:1px solid var(--line); background:var(--ice); text-align:center; padding:10px 4px; border-radius:var(--r); font-size:13px; font-weight:600; color:var(--ink-soft);}
-  .slot.available{cursor:pointer; color:var(--blue-deep); background:#fff;}
-  .slot.available:hover{border-color:var(--blue);}
-  .slot.selected{background:var(--blue); border-color:var(--blue); color:#fff;}
-  .slot.taken{text-decoration:line-through; opacity:.4;}
-
-  .cta-band{background:var(--red); color:#fff; padding:54px 0; text-align:center;}
-  .cta-band h2{color:#fff; font-size:clamp(22px,3vw,30px);}
-  .cta-band p{color:rgba(255,255,255,.75); max-width:460px; margin:10px auto 26px; font-size:15px;}
-  .cta-band .btn-primary{background:#fff; color:var(--red);}
-  .cta-band .btn-primary:hover{background:var(--red-pale);}
-
-  .ins-card{background:var(--ice); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px; display:flex; flex-direction:column; gap:4px; transition:.15s border-color;}
-  .ins-card:hover{border-color:var(--blue);}
-  .ins-code{font-family:'Source Serif 4',serif; font-size:22px; font-weight:700; color:var(--blue-deep);}
-  .ins-name{font-size:13px; color:var(--ink-soft); font-weight:500;}
-
-  footer{background:#fff; border-top:4px solid var(--red); padding:48px 0 24px;}
-  footer .wrap{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:36px;}
-  @media (max-width:780px){footer .wrap{grid-template-columns:1fr; gap:28px;}}
-  footer h4{font-size:13.5px; font-weight:700; color:var(--blue-deep); margin-bottom:12px; text-transform:uppercase; letter-spacing:.04em;}
-  footer a{display:block; padding:4px 0; font-size:13.5px; color:var(--ink-soft);}
-  footer a:hover{color:var(--blue);}
-  .foot-brand{font-family:'Source Serif 4',serif; color:var(--blue-deep); font-size:17px; margin-bottom:8px;}
-  .foot-bottom{border-top:1px solid var(--line); margin-top:32px; padding-top:18px; font-size:12px; color:var(--ink-soft); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
-
-  /* hours table extras */
-  table.hours .pause-row td{background:var(--ice); font-size:13px; padding:8px 18px;}
-  table.hours .day-separator td{border-top:2px solid var(--line);}
-  table.hours .booked-row td{background:#FEF5F5;}
-  .badge-booked{display:inline-block; background:#FDE8E8; color:var(--red); font-size:12px; font-weight:700; padding:3px 9px; border-radius:20px; border:1px solid #F5C6C6;}
-  .booked-day{border-top:none !important;}
-
-  /* red accents */
-  .accent-red{color:var(--red);}
-  .tag-red{background:#FDE8E8; color:var(--red); border:1px solid #F5C6C6;}
-  .btn-red{background:var(--red); color:#fff;}
-  .btn-red:hover{background:#9b2e22;}
-
-  /* stat border red variant */
-  .stat-red{border-left-color:var(--red) !important;}
-  .stat-red b{color:var(--red) !important;}
-
-  /* Více dropdown */
-  .nav-more{position:relative;}
-  .more-btn{background:none; border:none; padding:9px 13px; font-size:14px; font-weight:500; color:var(--ink); border-radius:var(--r); display:flex; align-items:center; cursor:pointer;}
-  .more-btn:hover{color:var(--blue-deep); background:var(--blue-pale);}
-  .more-dropdown{
-    display:none; position:absolute; top:calc(100% + 6px); right:0;
-    background:#fff; border:1px solid var(--line); border-radius:var(--r);
-    box-shadow:0 8px 24px -8px rgba(27,58,140,.18);
-    min-width:160px; z-index:100; padding:6px 0;
-  }
-  .more-dropdown a{display:block; padding:10px 18px; font-size:14px; font-weight:500; color:var(--ink);}
-  .more-dropdown a:hover{background:var(--blue-pale); color:var(--blue-deep);}
-  .nav-more.open .more-dropdown{display:block;}
-  @media (max-width:900px){
-    .more-dropdown{position:static; box-shadow:none; border:none; padding:0;}
-    .more-btn{width:100%; padding:12px 8px;}
-  }
-
-  /* subpage overlay */
-  #subpage{display:none; position:fixed; inset:0; background:#fff; z-index:200; overflow-y:auto;}
-  #subpage.open{display:block;}
-  .subpage-header{background:var(--blue-deep); color:#fff; padding:16px 24px; display:flex; align-items:center; gap:14px; position:sticky; top:0; z-index:10;}
-  .subpage-back{background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:14px; font-weight:600; font-family:inherit; padding:0;}
-  .subpage-back:hover{opacity:.8;}
-  .subpage-title{font-family:'Source Serif 4',serif; font-size:20px; color:#fff; margin:0;}
-  .subpage-body{max-width:1100px; margin:0 auto; padding:48px 24px;}
-
-  :focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
-  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}}
 </style>
 </head>
 <body>
 
-<div class="topbar">
+<div class="topline">
   <div class="wrap">
-    <div class="topbar-left">
-      <span>📞 <a href="tel:+420554611766">+420 554 611 766</a></span>
-      <span>✉️ <a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></span>
-    </div>
-    <div>Náměstí Hrdinů 8, Krnov</div>
+    <span><a href="tel:+420554611766">554 611 766</a> &nbsp;·&nbsp; <a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></span>
+    <span class="addr">Poliklinika Krnov, Náměstí Hrdinů 8</span>
   </div>
 </div>
 
-<header class="site">
-  <div class="wrap nav-row">
-    <a href="#uvod" class="brand">
-      <img src="logo.png" alt="ORTOHAL Krnov" style="height:100px; width:auto; max-width:180px; display:block; object-fit:contain;">
+<header class="site-head">
+  <div class="wrap">
+    <a href="/" class="brand" aria-label="ORTOHAL Krnov – úvod">
+      <img src="/img/znak.png" alt="" width="54" height="54">
+      <span class="brand-txt">ORTOHAL<small>KRNOV</small></span>
     </a>
-    <button class="menu-toggle" aria-label="Menu" onclick="document.getElementById('mainNav').classList.toggle('open')"><span></span></button>
-    <nav class="main" id="mainNav">
-      <a href="#o-oboru">O oboru</a>
-      <a href="#sluzby">Služby</a>
-      <a href="#lekari">Lékaři</a>
-      <a href="#hodiny">Hodiny</a>
-      <a href="#cenik">Ceník</a>
-      <a href="#kontakt">Kontakt</a>
-      <div class="nav-more" id="navMore">
-        <button class="navlink more-btn" onclick="toggleMore(event)" type="button">
-          Více <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" style="margin-left:3px;"><path d="M2 4l4 4 4-4"/></svg>
-        </button>
-        <div class="more-dropdown" id="moreDropdown">
-          <a href="#page-galerie" onclick="navigatePage('galerie');return false;">Fotogalerie</a>
-          <a href="#page-certifikaty" onclick="navigatePage('certifikaty');return false;">Certifikáty</a>
-          <a href="#page-erecept" onclick="navigatePage('erecept');return false;">eRecept</a>
-        </div>
-      </div>
-      <a href="rezervace.html" class="nav-cta">Rezervace</a>
+    <button class="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav"><i></i><i></i><i></i></button>
+    <nav class="nav" id="nav">
+      <a href="/#hodiny">Ordinační hodiny</a>
+      <a href="/#sluzby">Služby</a>
+      <a href="/#lekari">Lékaři</a>
+      <a href="/#cenik">Ceník</a>
+      <a href="/erecept">eRecept</a>
+      <a href="/#kontakt">Kontakt</a>
+      <a href="/rezervace" class="btn btn-red">Objednat se</a>
     </nav>
   </div>
 </header>
 
-<div class="notice">
-  <div class="wrap">⚠ <strong>V těchto dnech neordinujeme:</strong>&nbsp;30. 6., 7. 7., 10. 7., 17. 7., 20. 7. a 17. 8.</div>
-</div>
+<div class="notice" id="notice" hidden><div class="wrap"></div></div>
 
-<section class="hero" id="uvod" style="position:relative; overflow:hidden;">
-  <img src="logo.png" alt="" aria-hidden="true" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); height:85%; width:auto; opacity:0.07; pointer-events:none; user-select:none;">
-  <div class="hero-inner" style="position:relative; z-index:1;">
+<main>
+<section class="hero" id="uvod">
+  <svg class="hero-arc" viewBox="0 0 200 200" aria-hidden="true">
+    <path d="M118 12 A88 88 0 1 0 104 188" fill="none" stroke="#1B3A8C" stroke-width=".7" opacity=".55"/>
+    <path d="M132 16 A88 88 0 0 1 120 186" fill="none" stroke="#C0272D" stroke-width=".7" opacity=".6"/>
+  </svg>
+  <div class="wrap">
     <div>
-      <span class="eyebrow">Ortopedická ambulance · Krnov</span>
-      <h1>Péče o váš pohybový aparát, na kterou se můžete spolehnout.</h1>
-      <p class="lead">Diagnostika, prevence a léčba vrozených i získaných vad, úrazů a funkčních poruch pohybového aparátu — pro děti i dospělé.</p>
+      <p class="kicker">Ortopedická ambulance</p>
+      <h1>Ortopedie na poliklinice <em>v Krnově</em></h1>
+      <p class="lead">Vyšetření a léčba kloubů, páteře a úrazů pohybového aparátu pro dospělé i děti. Bez objednání v ordinačních hodinách, nebo na čas přes online rezervaci.</p>
       <div class="hero-actions">
-        <a href="rezervace.html" class="btn btn-primary">Objednat se</a>
-        <a href="#sluzby" class="btn btn-outline">Naše služby</a>
+        <a href="/rezervace" class="btn btn-red">Objednat se online <span class="arr">→</span></a>
+        <a href="#hodiny" class="btn btn-line">Ordinační hodiny</a>
       </div>
+      <p class="hero-note">Po telefonu: <a href="tel:+420554611766">554 611 766</a></p>
     </div>
-    <div class="hero-card" id="todayCard"></div>
-  </div>
+    <div class="today" id="today" aria-live="polite"></div>
   </div>
 </section>
 
-<section id="o-oboru">
+<section id="hodiny">
   <div class="wrap">
-    <div class="lead-grid">
+    <div class="sec-head">
       <div>
-        <span class="tag">O oboru</span>
-        <h2 style="font-size:26px;">Ortopedie a traumatologie pohybového ústrojí</h2>
-        <div class="stat-row">
-          <div class="stat stat-red"><b>3</b><span>lékaři v ambulanci</span></div>
-          <div class="stat"><b>4×</b><span>týdně ordinační dny</span></div>
-          <div class="stat"><b>od 2018</b><span>ORTOHAL s.r.o.</span></div>
+        <p class="kicker">Platné od 1. 4. 2025</p>
+        <h2>Ordinační hodiny</h2>
+      </div>
+      <p>Většinu dne ordinujeme bez objednání – pacienti jdou na řadu podle příchodu. Červené bloky jsou vyhrazené jen pro objednané přes online rezervaci.</p>
+    </div>
+
+    <div class="week" id="week">
+      <div class="wk-row" data-wd="1">
+        <div class="wk-day">Pondělí<small>MUDr. Miroslav Halíř</small></div>
+        <div>
+          <div class="track">
+            <div class="bar walk" style="left:9.09%;width:36.36%">bez objednání</div>
+            <div class="bar pause" style="left:45.45%;width:9.09%" title="Polední přestávka"></div>
+            <div class="bar walk" style="left:54.55%;width:27.27%">bez objednání</div>
+            <div class="bar book" style="left:81.82%;width:18.18%">objednaní</div>
+          </div>
+          <p class="wk-txt"><b>8:00–12:00</b> a <b>13:00–16:00</b> bez objednání · <span class="r">16:00–18:00 pouze objednaní</span></p>
         </div>
       </div>
+      <div class="wk-row" data-wd="2">
+        <div class="wk-day">Úterý<small>MUDr. Rostislav Kocián</small></div>
+        <div>
+          <div class="track">
+            <div class="bar walk" style="left:9.09%;width:36.36%">bez objednání</div>
+            <div class="bar pause" style="left:45.45%;width:4.55%" title="Polední přestávka"></div>
+            <div class="bar book" style="left:50%;width:27.27%">objednaní</div>
+          </div>
+          <p class="wk-txt"><b>8:00–12:00</b> bez objednání · <span class="r">12:30–15:30 pouze objednaní</span></p>
+        </div>
+      </div>
+      <div class="wk-row" data-wd="3">
+        <div class="wk-day">Středa</div>
+        <div><p class="wk-empty">Neordinuje se</p></div>
+      </div>
+      <div class="wk-row" data-wd="4">
+        <div class="wk-day">Čtvrtek<small>Dětská poradna</small></div>
+        <div>
+          <div class="track">
+            <div class="bar walk" style="left:81.82%;width:18.18%">děti</div>
+          </div>
+          <p class="wk-txt"><b>16:00–18:00</b> sonografie dětských kyčlí a ortopedická poradna pro děti a dorost, bez objednání</p>
+        </div>
+      </div>
+      <div class="wk-row" data-wd="5">
+        <div class="wk-day">Pátek<small>MUDr. Karel Zapalač</small></div>
+        <div>
+          <div class="track">
+            <div class="bar walk" style="left:0;width:63.64%">bez objednání</div>
+          </div>
+          <p class="wk-txt"><b>7:00–14:00</b> bez objednání</p>
+        </div>
+      </div>
+      <div class="axis" aria-hidden="true"><span></span><div><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span></div></div>
+    </div>
+
+    <div class="legend">
+      <span><i style="background:var(--blue)"></i> bez objednání</span>
+      <span><i style="background:repeating-linear-gradient(135deg,var(--red) 0 5px,#CF3C42 5px 10px)"></i> pouze objednaní (online)</span>
+      <span><i style="border:1px dashed var(--line-strong)"></i> polední přestávka</span>
+    </div>
+
+    <div class="rules">
       <div>
-        <p>Ortopedie a traumatologie pohybového ústrojí je chirurgický obor zabývající se diagnostikou, prevencí a léčením vrozených nebo získaných vad, chorob, úrazů a funkčních poruch pohybového aparátu. Nedílnou součástí oboru je traumatologie pohybového ústrojí, a to jak vlastní akutní ošetření úrazů, tak i řešení jejich následků.</p>
-        <p>Obor se částečně prolíná s neurologií, pediatrií, rehabilitační a fyzikální medicínou, revmatologií, ortopedickou protetikou a obory komplementu. Ortopedická ambulantní péče se obvykle dělí na zaměření pro dospělé a dětské pacienty, jejich akutní či chronická onemocnění a úrazy pohybového aparátu včetně páteře, dále na sportovní traumatologii a sonografická vyšetření svalů, šlach a kloubů.</p>
+        <h3>Objednaní mají přednost</h3>
+        <p>Pacient s rezervací jde v daný čas na řadu před ostatními. Kdo přijde pozdě, rezervace mu propadá a čeká v běžném pořadí.</p>
+      </div>
+      <div>
+        <h3>Akutní stavy vždy</h3>
+        <p>Úrazy a stavy vyžadující okamžité ošetření bereme přednostně – o pořadí rozhoduje lékař nebo sestra. Čas se proto může mírně posunout.</p>
+      </div>
+      <div>
+        <h3>Co si vzít s sebou</h3>
+        <p>Kartičku pojišťovny, doporučení nebo zprávy od jiných lékařů a snímky (RTG, MR) – na CD nebo v elektronické podobě.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="alt" id="sluzby">
+<section class="paper" id="sluzby">
   <div class="wrap">
-    <div class="section-head">
-      <span class="tag tag-r" style="display:block; margin-bottom:10px;">Co nabízíme</span>
-      <h2 style="border-bottom:3px solid var(--red); display:inline-block; padding-bottom:8px;">Naše služby</h2>
-      <p>Přehled péče, kterou v ambulanci poskytujeme.</p>
+    <div class="sec-head">
+      <div>
+        <p class="kicker">Co děláme</p>
+        <h2>Služby ambulance</h2>
+      </div>
+      <p>Ortopedie a traumatologie pohybového ústrojí – diagnostika, prevence a léčba vrozených i získaných vad, úrazů a funkčních poruch pohybového aparátu včetně páteře.</p>
     </div>
-    <div class="grid3">
 
-      <div class="svc-card">
-        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></div>
-        <h3>Rázová vlna</h3>
-        <p>Léčebná metoda, kterou ve spektru rehabilitačních metod řadíme do oblasti fyzikální terapie.</p>
+    <div class="svc">
+      <div class="svc-list">
+        <details>
+          <summary><h3>Rázová vlna</h3><p>Fyzikální terapie úponových bolestí – pata, loket, rameno, Achillova šlacha.</p></summary>
+          <div class="svc-body">
+            <p>Rázová vlna přenáší mechanickou energii do postižené tkáně: zmírňuje bolest, zlepšuje prokrvení a urychluje hojení a regeneraci. Používá se u chronických, subakutních i některých akutních potíží.</p>
+            <p><strong>Nejčastěji ji doporučujeme při:</strong></p>
+            <ul>
+              <li>bolestech paty včetně patní ostruhy,</li>
+              <li>tenisovém lokti a bolestech v oblasti lokte,</li>
+              <li>bolestech ramenního kloubu a omezení pohyblivosti,</li>
+              <li>doléčení zánětu Achillovy šlachy a bolesti kolene po přetížení,</li>
+              <li>bolestech v oblasti velkých chocholíků stehenních kostí.</li>
+            </ul>
+            <p>Obvykle 4–5 ošetření v týdenních odstupech. Terapii vždy doporučuje lékař, který zhodnotí i kontraindikace – rázová vlna se nepoužívá u nádorových onemocnění, poruch srážlivosti krve a léčby antikoagulancii, systémových zánětů a v těhotenství. Po lokální aplikaci kortikoidu se terapie odkládá o 3–6 týdnů.</p>
+            <span class="price">600 Kč / aplikace · důchodci 300 Kč</span>
+          </div>
+        </details>
+        <details>
+          <summary><h3>Kolagenové injekce GUNA</h3><p>Lokální aplikace kolagenu do místa bolesti nebo poruchy funkce.</p></summary>
+          <div class="svc-body">
+            <p>Kolagen GUNA se aplikuje přímo do místa bolesti. Cílem je nahradit, posílit a obnovit tkáně, a tím chránit kloubní struktury.</p>
+            <span class="price">250 Kč / ampule</span>
+          </div>
+        </details>
+        <details>
+          <summary><h3>Ortoflex One</h3><p>Viskoelastický roztok do kloubu – kyselina hyaluronová a chondroitin.</p></summary>
+          <div class="svc-body">
+            <p>ORTOFLEX ONE je sterilní viskoelastický roztok se dvěma vysoce čištěnými biologickými polymery – hyaluronátem sodným a chondroitin sulfátem sodným. Doplňuje kloubní tekutinu a zlepšuje pohyblivost kloubu.</p>
+          </div>
+        </details>
+        <details>
+          <summary><h3>Sonografie dětských kyčlí</h3><p>Vyšetření novorozenců a kojenců – každý čtvrtek 16:00–18:00 bez objednání.</p></summary>
+          <div class="svc-body">
+            <p>Ultrazvukové vyšetření kyčelních kloubů novorozenců a kojenců k vyloučení vrozeného vykloubení kyčle – závažné vývojové vady, kterou je potřeba zachytit co nejdříve. Ve stejném čase běží ortopedická poradna pro děti a dorost.</p>
+          </div>
+        </details>
+        <details>
+          <summary><h3>Operativa a endoprotézy</h3><p>Operace velkých i malých kloubů v Nemocnici Krnov.</p></summary>
+          <div class="svc-body">
+            <p>Operační péče zahrnuje výkony na velkých kloubech (kyčel, koleno, rameno, hlezno) i na malých kloubech. Indikované operace provádějí lékaři ORTOHAL v nemocnici SZZ Krnov.</p>
+            <p>Čeká vás výměna kolenního kloubu? V ambulanci s vámi probereme indikaci, průběh operace i následnou rehabilitaci.</p>
+          </div>
+        </details>
+        <details>
+          <summary><h3>Protetika</h3><p>Ortopedické a protetické pomůcky po telefonickém objednání.</p></summary>
+          <div class="svc-body">
+            <p>Protetickou péči a veškeré ortopedické a protetické pomůcky zajišťuje prim. MUDr. Jiří Tesarčík po individuálním telefonickém objednání na čísle <a href="tel:+420553716505">553 716 505</a>.</p>
+          </div>
+        </details>
+        <details>
+          <summary><h3>Cviky a rehabilitace</h3><p>Doporučené cvičení pro záda, krční páteř, rameno a loket i pro děti.</p></summary>
+          <div class="svc-body">
+            <p>Součástí léčby je i správně zvolené cvičení. Lékař vám doporučí cviky při bolestech bederní a krční páteře, ramene a lokte nebo cvičení pro děti s vadným držením těla a v případě potřeby doporučí rehabilitaci.</p>
+          </div>
+        </details>
       </div>
 
-      <div class="svc-card">
-        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="5"/></svg></div>
-        <h3>Kolagenové injekce GUNA</h3>
-        <p>Kolagen GUNA se aplikuje lokálně do místa bolesti nebo místa poruchy funkce.</p>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10c4-6 14-6 18 0M3 10c2 4 4 6 9 6s7-2 9-6"/><circle cx="12" cy="10" r="2"/></svg></div>
-        <h3>Sonografie</h3>
-        <p>Vyšetřování kyčelních kloubů novorozenců a kojenců k vyloučení vrozeného vykloubení.</p>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 4v6c0 2-2 2-2 4s2 2 2 4M16 4v6c0 2 2 2 2 4s-2 2-2 4" stroke-linecap="round"/></svg></div>
-        <h3>Pohybový aparát</h3>
-        <p>Operační ortopedická péče zahrnuje operace velkých kloubů i operace malých kloubů.</p>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 7l-7-4-7 4v6c0 5 3 8 7 9 4-1 7-4 7-9V7z"/></svg></div>
-        <h3>Operativa</h3>
-        <p>Chirurgická léčba poruch, onemocnění a úrazů pohybového a podpůrného aparátu.</p>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></div>
-        <h3>Protetika</h3>
-        <p>Ortopedická protetika jako součást komplexní péče o pacienty s poruchami pohybového aparátu.</p>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h16M4 12a4 4 0 014-4M20 12a4 4 0 00-4-4"/></svg></div>
-        <h3>Ortoflex One</h3>
-        <p>Specializovaná metoda v rámci konzervativní ortopedické léčby pohybového aparátu.</p>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></div>
-        <h3>Endoprotézy kolene</h3>
-        <p>Péče v oblasti náhrad kolenního kloubu — od indikace přes operativu po rehabilitaci.</p>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 4c0 4 4 4 4 8s-4 4-4 8M14 4c0 4 4 4 4 8s-4 4-4 8" stroke-linecap="round"/></svg></div>
-        <h3>Masáže a cviky</h3>
-        <p>Doplňková rehabilitační péče a doporučené cviky podporující léčbu a prevenci.</p>
-      </div>
-
+      <aside class="svc-aside">
+        <figure>
+          <img src="/img/operace.jpg" alt="Lékaři ORTOHAL při operaci na sále Nemocnice Krnov" loading="lazy" width="1000" height="750">
+          <figcaption>Operace provádíme na sále Nemocnice Krnov.</figcaption>
+        </figure>
+        <div class="box">
+          <h3>Potřebujete jen recept?</h3>
+          <p>Lék, který vám u nás už byl předepsán, vám pošleme jako eRecept – bez návštěvy ordinace.</p>
+          <a href="/erecept" class="btn btn-line">Žádost o eRecept</a>
+        </div>
+      </aside>
     </div>
   </div>
 </section>
 
 <section id="lekari">
   <div class="wrap">
-    <div class="section-head">
-      <span class="tag">Náš tým</span>
-      <h2>Naši lékaři</h2>
-    </div>
-
-    <div class="doc-card">
-      <div class="doc-avatar">MH</div>
+    <div class="sec-head">
       <div>
+        <p class="kicker">Kdo vás ošetří</p>
+        <h2>Lékaři</h2>
+      </div>
+      <p>Každý den ordinuje jeden lékař – podle dne návštěvy tak víte, ke komu jdete.</p>
+    </div>
+    <div class="docs">
+      <article class="doc">
+        <img src="/img/halir.jpg" alt="MUDr. Miroslav Halíř v ordinaci" loading="lazy" width="500" height="387">
+        <p class="when">Ordinuje v pondělí</p>
         <h3>MUDr. Miroslav Halíř</h3>
-        <span class="doc-role">Jednatel a odborný zástupce ORTOHAL s.r.o.</span>
-        <div class="doc-cols">
-          <div>
-            <h5>Praxe</h5>
-            <ul>
-              <li>od r. 1999 — SZZ Krnov, lékař ortopedie</li>
-              <li>od r. 2017 — vedoucí lékař COS</li>
-            </ul>
-            <h5 style="margin-top:12px;">Vzdělání</h5>
-            <ul>
-              <li>1993–1999 — LF UP Olomouc</li>
-              <li>2002 — atestace, obor ortopedie I. st.</li>
-              <li>2006 — specializační způsobilost MZ ČR</li>
-            </ul>
-          </div>
-          <div>
-            <h5>Odborné kurzy</h5>
-            <ul>
-              <li>AO trauma kurz (basic + advance)</li>
-              <li>Kurz sonografie v ortopedii</li>
-              <li>Kurz chirurgie ruky</li>
-              <li>3letý cyklus ČSCHR, Aesculap Academie</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="doc-card">
-      <div class="doc-avatar">RK</div>
-      <div>
+        <p class="role">Jednatel a odborný zástupce ORTOHAL s.r.o.</p>
+        <details>
+          <summary>Praxe a vzdělání</summary>
+          <dl>
+            <dt>Praxe</dt>
+            <dd>od 1999 – SZZ Krnov, lékař ortopedie</dd>
+            <dd>od 2017 – vedoucí lékař COS</dd>
+            <dt>Vzdělání</dt>
+            <dd>1993–1999 – LF UP Olomouc, všeobecné lékařství</dd>
+            <dd>2002 – atestace z ortopedie I. stupně</dd>
+            <dd>2006 – specializovaná způsobilost MZ ČR, licence pro obor ortopedie</dd>
+            <dt>Kurzy</dt>
+            <dd>AO Trauma (basic + advanced), sonografie v ortopedii, chirurgie ruky</dd>
+            <dd>3letý vzdělávací cyklus ČSCHR, kurzy Aesculap Academy</dd>
+          </dl>
+        </details>
+      </article>
+      <article class="doc">
+        <img src="/img/kocian.jpg" alt="MUDr. Rostislav Kocián v ordinaci" loading="lazy" width="1000" height="666">
+        <p class="when">Ordinuje v úterý</p>
         <h3>MUDr. Rostislav Kocián</h3>
-        <span class="doc-role">Lékař ortopedické ambulance</span>
-        <div class="doc-cols">
-          <div><h5>Vzdělání</h5><ul><li>2015 — LF Masarykova univerzita Brno</li></ul></div>
-          <div><h5>Odborné kurzy</h5><ul><li>2018 — Základní kmen ortopedický</li></ul></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="doc-card">
-      <div class="doc-avatar">KZ</div>
-      <div>
+        <p class="role">Lékař ortopedické ambulance</p>
+        <details>
+          <summary>Vzdělání</summary>
+          <dl>
+            <dt>Vzdělání</dt>
+            <dd>2015 – LF Masarykovy univerzity Brno, všeobecné lékařství</dd>
+            <dt>Kurzy</dt>
+            <dd>2018 – certifikát o absolvování ortopedického základního kmene</dd>
+          </dl>
+        </details>
+      </article>
+      <article class="doc">
+        <img src="/img/zapalac.jpg" alt="MUDr. Karel Zapalač v ordinaci" loading="lazy" width="1000" height="666">
+        <p class="when">Ordinuje v pátek</p>
         <h3>MUDr. Karel Zapalač</h3>
-        <span class="doc-role">Lékař ortopedické ambulance</span>
-        <div class="doc-cols">
-          <div><h5>Vzdělání</h5><ul><li>2024 — Diplom o specializované způsobilosti</li></ul></div>
-          <div><h5>Odborné kurzy</h5><ul><li>2021 — Sonografie dětských kyčlí</li><li>2023 — Course participant certificate</li></ul></div>
-        </div>
-      </div>
+        <p class="role">Lékař ortopedické ambulance</p>
+        <details>
+          <summary>Vzdělání</summary>
+          <dl>
+            <dt>Vzdělání</dt>
+            <dd>2024 – diplom o specializované způsobilosti</dd>
+            <dt>Kurzy</dt>
+            <dd>2021 – kurz sonografie dětských kyčlí</dd>
+            <dd>2023 – Course participant certificate</dd>
+          </dl>
+        </details>
+      </article>
     </div>
   </div>
 </section>
 
-<section class="alt" id="hodiny">
+<section class="paper" id="ordinace">
   <div class="wrap">
-    <div class="section-head left">
-      <span class="tag">Rozpis</span>
-      <h2>Ordinační hodiny</h2>
-      <p>Platné od 1. 4. 2025</p>
+    <div class="sec-head">
+      <div>
+        <p class="kicker">Kde nás najdete</p>
+        <h2>Ordinace na poliklinice</h2>
+      </div>
+      <p>Budova polikliniky na Náměstí Hrdinů 8, v přízemí je lékárna. Ambulance funguje pod názvem ORTOHAL od 1. 4. 2018 a navazuje na dřívější ortopedickou ambulanci MUDr. Petra Luckého.</p>
     </div>
-    <table class="hours">
-      <thead>
-        <tr>
-          <th style="width:160px;">Den / lékař</th>
-          <th>Časový blok</th>
-          <th>Poznámka</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- PONDĚLÍ -->
-        <tr>
-          <td class="day" rowspan="3">Pondělí<span class="doc">MUDr. Miroslav Halíř</span></td>
-          <td><strong>8:00 – 12:00</strong></td>
-          <td>Ordinace bez objednání</td>
-        </tr>
-        <tr class="pause-row">
-          <td style="color:var(--ink-soft);">12:00 – 13:00</td>
-          <td style="color:var(--ink-soft);">Polední přestávka</td>
-        </tr>
-        <tr>
-          <td><strong>13:00 – 16:00</strong></td>
-          <td>Ordinace bez objednání</td>
-        </tr>
-        <!-- PONDĚLÍ objednaní -->
-        <tr class="booked-row">
-          <td class="day booked-day"></td>
-          <td><strong>16:00 – 18:00</strong></td>
-          <td><span class="badge-booked">Pouze objednaní · online ORTOHAL</span></td>
-        </tr>
-
-        <!-- ÚTERÝ -->
-        <tr class="day-separator">
-          <td class="day" rowspan="3">Úterý<span class="doc">MUDr. Rostislav Kocián</span></td>
-          <td><strong>8:00 – 12:00</strong></td>
-          <td>Ordinace bez objednání</td>
-        </tr>
-        <tr class="pause-row">
-          <td style="color:var(--ink-soft);">12:00 – 12:30</td>
-          <td style="color:var(--ink-soft);">Polední přestávka</td>
-        </tr>
-        <tr class="booked-row">
-          <td><strong>12:30 – 15:30</strong></td>
-          <td><span class="badge-booked">Pouze objednaní · online ORTOHAL</span></td>
-        </tr>
-
-        <!-- STŘEDA -->
-        <tr class="day-separator">
-          <td class="day">Středa</td>
-          <td colspan="2" style="color:var(--ink-soft);">— neordinuje se —</td>
-        </tr>
-
-        <!-- ČTVRTEK -->
-        <tr class="day-separator">
-          <td class="day">Čtvrtek<span class="doc">Sonografická poradna</span></td>
-          <td><strong>16:00 – 18:00</strong></td>
-          <td>Sonografie dětských kyčlí + ortopedická poradna pro děti a dorost<span class="note" style="color:var(--blue); font-style:normal;">bez objednání</span></td>
-        </tr>
-
-        <!-- PÁTEK -->
-        <tr class="day-separator">
-          <td class="day">Pátek<span class="doc">MUDr. Karel Zapalač</span></td>
-          <td><strong>7:00 – 14:00</strong></td>
-          <td>Ordinace bez objednání</td>
-        </tr>
-      </tbody>
-    </table>
-    <p style="margin-top:16px; font-size:13px; color:var(--ink-soft);">Objednání online probíhá přes systém ORTOHAL. Objednaní pacienti mají vyhrazené časové bloky — viz tabulka výše.</p>
+    <div class="place">
+      <figure class="p1"><img src="/img/poliklinika.jpg" alt="Budova polikliniky Krnov na Náměstí Hrdinů" loading="lazy" width="1000" height="666"><figcaption>Poliklinika, Náměstí Hrdinů 8</figcaption></figure>
+      <figure class="p2"><img src="/img/cekarna.jpg" alt="Čekárna ortopedické ambulance" loading="lazy" width="1000" height="666"><figcaption>Čekárna</figcaption></figure>
+      <figure class="p3"><img src="/img/razova-vlna.jpg" alt="Přístroj na terapii rázovou vlnou Storz Medical" loading="lazy" width="500" height="411" style="object-fit:contain;background:#fff"><figcaption>Rázová vlna Storz Medical</figcaption></figure>
+      <figure class="p4"><img src="/img/ordinace.jpg" alt="Ordinace ortopedické ambulance ORTOHAL" loading="lazy" width="1000" height="666"><figcaption>Ordinace</figcaption></figure>
+    </div>
   </div>
 </section>
 
 <section id="cenik">
-  <div class="wrap">
-    <div class="section-head left">
-      <span class="tag">Ceník</span>
+  <div class="wrap two">
+    <div>
+      <p class="kicker">Ceník</p>
       <h2>Výkony nehrazené pojišťovnou</h2>
-      <p>Zdravotní a administrativní výkony nehrazené ze zdravotního pojištění.</p>
+      <p style="color:var(--ink-soft)">Ostatní péče je hrazená ze zdravotního pojištění.</p>
+      <table class="price">
+        <tr><td>Rázová vlna – 1 aplikace</td><td>600 Kč</td></tr>
+        <tr><td>Rázová vlna pro důchodce – 1 aplikace</td><td>300 Kč</td></tr>
+        <tr><td>Kolagenové injekce GUNA MD – 1 ks</td><td>250 Kč</td></tr>
+      </table>
     </div>
-    <table class="cenik">
-      <thead><tr><th>Výkon</th><th style="text-align:right;">Cena</th></tr></thead>
-      <tbody>
-        <tr><td>Rázová vlna — pracující, 1 aplikace</td><td class="price">600 Kč</td></tr>
-        <tr><td>Rázová vlna — důchodci, 1 aplikace</td><td class="price">300 Kč</td></tr>
-        <tr><td>Aplikace kolagenových injekcí GUNA MD — 1 ks</td><td class="price">250 Kč</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section class="alt" id="galerie">
-  <div class="wrap">
-    <div class="section-head left">
-      <span class="tag">Naše prostory</span>
-      <h2 style="font-size:22px;">Fotogalerie</h2>
-      <p>Sem doplníme fotky ordinace, čekárny a loga po jejich zaslání.</p>
-    </div>
-    <div class="gallery-grid">
-      <div class="gallery-item">Ordinace<br>(fotka bude doplněna)</div>
-      <div class="gallery-item">Čekárna<br>(fotka bude doplněna)</div>
-      <div class="gallery-item">Poliklinika<br>(fotka bude doplněna)</div>
-    </div>
-  </div>
-</section>
-
-<section id="kontakt">
-  <div class="wrap contact-grid">
     <div>
-      <span class="tag tag-r">Spojte se s námi</span>
-      <h2 style="font-size:24px;">Kontakt</h2>
-      <p style="color:var(--ink-soft); margin-bottom:24px;">MUDr. Miroslav Halíř — Náměstí Hrdinů 8, Krnov</p>
+      <p class="kicker blue">Smluvní pojišťovny</p>
+      <h2>Spolupracujeme se všemi</h2>
+      <p style="color:var(--ink-soft)">Máme smlouvy se všemi zdravotními pojišťovnami v ČR.</p>
+      <div class="ins">
+        <div><b>111</b><span>VZP ČR</span></div>
+        <div><b>201</b><span>Vojenská ZP</span></div>
+        <div><b>205</b><span>ČPZP</span></div>
+        <div><b>207</b><span>OZP</span></div>
+        <div><b>209</b><span>ZP Škoda</span></div>
+        <div><b>211</b><span>ZP MV ČR</span></div>
+        <div><b>213</b><span>RBP</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <div class="info-row">
-        <div class="info-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.97.36 1.92.68 2.83a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.25-1.25a2 2 0 012.11-.45c.91.32 1.86.55 2.83.68A2 2 0 0122 16.92z"/></svg></div>
-        <div><h4>Telefon</h4><p><a href="tel:+420554611766">+420 554 611 766</a></p></div>
-      </div>
-      <div class="info-row">
-        <div class="info-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7l9 6 9-6M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg></div>
-        <div><h4>E-mail</h4><p><a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></p></div>
-      </div>
-      <div class="info-row">
-        <div class="info-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-        <div><h4>Adresa</h4><p>Náměstí Hrdinů 8, Krnov (budova polikliniky)</p></div>
-      </div>
-
-      <div class="map-frame">
-        <iframe loading="lazy" src="https://www.google.com/maps?q=N%C3%A1m%C4%9Bst%C3%AD%20Hrdin%C5%AF%208%2C%20Krnov&output=embed" allowfullscreen></iframe>
+<section class="paper" id="kontakt">
+  <div class="wrap contact">
+    <div>
+      <p class="kicker">Kontakt</p>
+      <h2>Ozvěte se nám</h2>
+      <ul class="c-list">
+        <li><span>Telefon</span><div><a class="big" href="tel:+420554611766">554 611 766</a></div></li>
+        <li><span>E-mail</span><div><a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></div></li>
+        <li><span>Ordinace</span><div>Poliklinika Krnov<br>Náměstí Hrdinů 8, 794 01 Krnov</div></li>
+        <li><span>Firma</span><div>ORTOHAL s.r.o., IČ 06771742<br>Máchova 578/4, 794 01 Krnov<br>jednatel MUDr. Miroslav Halíř</div></li>
+      </ul>
+      <div class="map-links">
+        <a class="btn btn-line" href="https://mapy.cz/zakladni?q=N%C3%A1m%C4%9Bst%C3%AD%20Hrdin%C5%AF%208%2C%20Krnov" target="_blank" rel="noopener">Mapy.cz</a>
+        <a class="btn btn-line" href="https://www.google.com/maps/search/?api=1&query=N%C3%A1m%C4%9Bst%C3%AD+Hrdin%C5%AF+8%2C+794+01+Krnov" target="_blank" rel="noopener">Google Mapy</a>
       </div>
     </div>
 
-    <div class="form-card">
-      <h3 style="font-size:16px; margin-bottom:16px;">Napište nám</h3>
-      <div class="success-box" id="contactSuccess">Děkujeme, vaše zpráva byla odeslána. Ozveme se vám co nejdříve.</div>
-      <form id="contactForm">
-        <div class="field-row">
-          <div class="field"><label>Jméno a příjmení</label><input type="text" required></div>
-          <div class="field"><label>Telefon</label><input type="tel"></div>
+    <div class="form-box">
+      <h3>Napište nám</h3>
+      <p style="color:var(--ink-soft); font-size:15.5px">Dotazy k ordinaci. K objednání použijte prosím <a href="/rezervace">online rezervaci</a>, recept vyřídíte přes <a href="/erecept">eRecept</a>.</p>
+      <div class="msg" id="cMsg" hidden></div>
+      <form id="contactForm" novalidate>
+        <div class="row2">
+          <div class="field"><label for="c_name">Jméno a příjmení</label><input id="c_name" name="name" autocomplete="name" required></div>
+          <div class="field"><label for="c_phone">Telefon</label><input id="c_phone" name="phone" type="tel" autocomplete="tel"></div>
         </div>
-        <div class="field"><label>E-mail</label><input type="email" required></div>
-        <div class="field"><label>Zpráva</label><textarea rows="4" required></textarea></div>
-        <div class="checkbox-row">
-          <input type="checkbox" id="gdprContact" required>
-          <label for="gdprContact">Souhlasím se zpracováním osobních údajů. Pokud neudělíte souhlas, váš požadavek nemůže být zpracován. <a href="#" style="text-decoration:underline;">Ochrana osobních údajů</a></label>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; border:none;">Odeslat</button>
+        <div class="field"><label for="c_email">E-mail</label><input id="c_email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="c_msg">Zpráva</label><textarea id="c_msg" name="message" rows="4" required></textarea></div>
+        <div class="hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
+        <label class="check"><input type="checkbox" name="consent" required> <span>Souhlasím se <a href="/ochrana-osobnich-udaju" target="_blank">zpracováním osobních údajů</a> za účelem vyřízení dotazu.</span></label>
+        <button class="btn btn-blue" type="submit">Odeslat zprávu</button>
       </form>
     </div>
   </div>
 </section>
+</main>
 
-<section class="alt" id="rezervace">
+<footer class="site-foot">
   <div class="wrap">
-    <div class="section-head left">
-      <span class="tag tag-r">Online rezervace</span>
-      <h2 style="font-size:24px;">Rezervace termínu</h2>
-      <p>Jednoduchá ukázková rezervace — vyberte lékaře, den a volný čas. Plnohodnotné napojení na ordinační systém doplníme v další fázi.</p>
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">ORTOHAL <span>KRNOV</span></div>
+        <p>Ortopedická ambulance na poliklinice v Krnově. Ortopedie a traumatologie pohybového ústrojí pro dospělé i děti.</p>
+      </div>
+      <div>
+        <h4>Ambulance</h4>
+        <ul>
+          <li><a href="/#hodiny">Ordinační hodiny</a></li>
+          <li><a href="/#sluzby">Služby</a></li>
+          <li><a href="/#lekari">Lékaři</a></li>
+          <li><a href="/#cenik">Ceník</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Online</h4>
+        <ul>
+          <li><a href="/rezervace">Objednání</a></li>
+          <li><a href="/erecept">eRecept</a></li>
+          <li><a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="tel:+420554611766">554 611 766</a></li>
+          <li><a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a></li>
+          <li>Náměstí Hrdinů 8, Krnov</li>
+        </ul>
+      </div>
     </div>
-
-    <div class="form-card">
-      <h3 style="font-size:15px; margin-bottom:14px;">1. Vyberte lékaře</h3>
-      <div class="day-tabs" id="doctorTabs"></div>
-
-      <h3 style="font-size:15px; margin:24px 0 14px;">2. Vyberte volný čas</h3>
-      <div class="slot-grid" id="slotGrid"></div>
-
-      <h3 style="font-size:15px; margin:24px 0 14px;">3. Vaše údaje</h3>
-      <div class="success-box" id="bookingSuccess">Termín byl úspěšně zarezervován. Potvrzení vám zašleme na e-mail.</div>
-      <form id="bookingForm">
-        <div class="field-row">
-          <div class="field"><label>Jméno a příjmení</label><input type="text" required></div>
-          <div class="field"><label>Telefon</label><input type="tel" required></div>
-        </div>
-        <div class="field"><label>E-mail</label><input type="email" required></div>
-        <div class="field"><label>Poznámka (nepovinné)</label><textarea rows="3"></textarea></div>
-        <div class="checkbox-row">
-          <input type="checkbox" id="gdprBooking" required>
-          <label for="gdprBooking">Souhlasím se zpracováním osobních údajů za účelem rezervace termínu.</label>
-        </div>
-        <div id="selectedSummary" style="font-size:13px; color:var(--ink-soft); margin-bottom:14px;"></div>
-        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; border:none;">Potvrdit rezervaci</button>
-      </form>
+    <div class="foot-bottom">
+      <span>© <span class="year">2026</span> ORTOHAL s.r.o. · IČ 06771742 · C 73173 vedená u Krajského soudu v Ostravě</span>
+      <span>Jednatel a odborný zástupce MUDr. Miroslav Halíř</span>
     </div>
-  </div>
-</section>
-
-<div class="cta-band">
-  <div class="wrap">
-    <h2>Potřebujete se objednat?</h2>
-    <p>Rezervujte si termín online, vyberte si lékaře a volný čas, který vám vyhovuje.</p>
-    <a href="rezervace.html" class="btn btn-primary">Přejít na rezervaci</a>
-  </div>
-</div>
-
-<!-- POJIŠŤOVNY -->
-<section style="padding:48px 0; background:#fff; border-top:1px solid var(--line);">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="tag">Smluvní pojišťovny</span>
-      <h2 style="font-size:24px;">Smluvní zdravotní pojišťovny</h2>
-      <p>Jsme smluvními partnery všech níže uvedených zdravotních pojišťoven.</p>
-    </div>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px;">
-      <div class="ins-card"><span class="ins-code">111</span><span class="ins-name">VZP ČR</span></div>
-      <div class="ins-card"><span class="ins-code">201</span><span class="ins-name">Vojenská ZP</span></div>
-      <div class="ins-card"><span class="ins-code">205</span><span class="ins-name">ČPZP</span></div>
-      <div class="ins-card"><span class="ins-code">207</span><span class="ins-name">OZP</span></div>
-      <div class="ins-card"><span class="ins-code">209</span><span class="ins-name">ZP MV ČR</span></div>
-      <div class="ins-card"><span class="ins-code">211</span><span class="ins-name">ZP Škoda</span></div>
-      <div class="ins-card"><span class="ins-code">213</span><span class="ins-name">RBP</span></div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div>
-      <div class="foot-brand">ORTOHAL s.r.o.</div>
-      <p style="font-size:13.5px; max-width:300px; color:var(--ink-soft);">Ortopedická ambulance v Krnově. Diagnostika, prevence a léčba poruch pohybového aparátu pro děti i dospělé.</p>
-    </div>
-    <div>
-      <h4>Stránky</h4>
-      <a href="#o-oboru">O oboru</a>
-      <a href="#sluzby">Služby</a>
-      <a href="#lekari">Lékaři</a>
-      <a href="#cenik">Ceník</a>
-      <a href="#rezervace">Rezervace</a>
-    </div>
-    <div>
-      <h4>Kontakt</h4>
-      <a href="tel:+420554611766">+420 554 611 766</a>
-      <a href="mailto:info@ortopediekrnov.cz">info@ortopediekrnov.cz</a>
-      <a href="#kontakt">Náměstí Hrdinů 8, Krnov</a>
-    </div>
-  </div>
-  <div class="wrap foot-bottom">
-    <span>© COPYRIGHT ORTOHAL s.r.o. 2005 – 2026</span>
-    <span>MUDr. Miroslav Halíř — jednatel a odborný zástupce</span>
   </div>
 </footer>
 
+<a href="/rezervace" class="btn btn-red fab" id="fab">Objednat se online</a>
+
+<script src="/js/site.js"></script>
 <script>
-document.querySelectorAll('nav.main a').forEach(a=>{
-  a.addEventListener('click', ()=> document.getElementById('mainNav').classList.remove('open'));
-});
+/* Ordinační hodiny pro kartu „Dnes“ – stejné údaje jako tabulka výše (minuty od půlnoci). */
+const WEEK = {
+  1: { who: "MUDr. Miroslav Halíř", blocks: [[480, 720, "bez objednání"], [720, 780, "polední přestávka", "pause"], [780, 960, "bez objednání"], [960, 1080, "pouze objednaní", "book"]] },
+  2: { who: "MUDr. Rostislav Kocián", blocks: [[480, 720, "bez objednání"], [720, 750, "polední přestávka", "pause"], [750, 930, "pouze objednaní", "book"]] },
+  4: { who: "Dětská poradna a sonografie kyčlí", blocks: [[960, 1080, "děti, bez objednání"]] },
+  5: { who: "MUDr. Karel Zapalač", blocks: [[420, 840, "bez objednání"]] },
+};
+const DAYN = ["neděle", "pondělí", "úterý", "středa", "čtvrtek", "pátek", "sobota"];
+const t = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
 
-const bookingDoctors = [
-  {id:'halir', name:'MUDr. Miroslav Halíř', day:'Pondělí'},
-  {id:'kocian', name:'MUDr. Rostislav Kocián', day:'Úterý'},
-  {id:'zapalac', name:'MUDr. Karel Zapalač', day:'Pátek'},
-];
-let bookingState = {doctor:bookingDoctors[0], slot:null};
-
-function genSlots(seed){
-  const base = ['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30'];
-  return base.map((t,i)=>({time:t, taken:((i+seed)%4===0)}));
+function pragueNow() {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Prague", weekday: "short", hour: "2-digit", minute: "2-digit", year: "numeric", month: "2-digit", day: "2-digit", hour12: false })
+    .formatToParts(new Date()).map((x) => [x.type, x.value]));
+  return { wd: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday), min: (+p.hour % 24) * 60 + +p.minute, date: `${p.year}-${p.month}-${p.day}` };
 }
 
-const tabsEl = document.getElementById('doctorTabs');
-bookingDoctors.forEach((doc,i)=>{
-  const btn = document.createElement('button');
-  btn.type='button';
-  btn.className='day-tab'+(i===0?' active':'');
-  btn.textContent = `${doc.name} — ${doc.day}`;
-  btn.onclick = ()=>{
-    tabsEl.querySelectorAll('.day-tab').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    bookingState.doctor = doc;
-    bookingState.slot = null;
-    renderSlots();
-  };
-  tabsEl.appendChild(btn);
-});
+const NA = { 1: "v pondělí", 2: "v úterý", 4: "ve čtvrtek", 5: "v pátek" };
+function nextOpen(wd) {
+  for (let i = 1; i <= 7; i++) {
+    const d = (wd + i) % 7;
+    if (WEEK[d]) return `${i === 1 ? "zítra" : NA[d]} od ${t(WEEK[d].blocks[0][0])}`;
+  }
+  return "";
+}
 
-function renderSlots(){
-  const grid = document.getElementById('slotGrid');
-  grid.innerHTML = '';
-  const seed = bookingState.doctor.id.length;
-  genSlots(seed).forEach(s=>{
-    const d = document.createElement('div');
-    d.textContent = s.time;
-    d.className = 'slot ' + (s.taken ? 'taken' : 'available');
-    if(!s.taken){
-      d.onclick = ()=>{
-        grid.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected'));
-        d.classList.add('selected');
-        bookingState.slot = s.time;
-        updateSummary();
-      };
-    }
-    grid.appendChild(d);
+function renderToday(closed) {
+  const now = pragueNow();
+  const el = document.getElementById("today");
+  const day = WEEK[now.wd];
+  const closedNote = closed[now.date];
+  if (!day || closedNote !== undefined) {
+    el.classList.add("closed");
+    el.innerHTML = `<div class="today-top"><span class="today-day">Dnes · ${DAYN[now.wd]}</span><span class="today-state"><i></i>zavřeno</span></div>
+      <h3>${closedNote ? escapeHtml(closedNote) : "Dnes se neordinuje"}</h3>
+      <p class="today-foot">Příští ordinace ${nextOpen(now.wd)}. Na čas se můžete <a href="/rezervace">objednat online</a>.</p>`;
+    return;
+  }
+  const cur = day.blocks.find((b) => now.min >= b[0] && now.min < b[1]);
+  const open = cur && cur[3] !== "pause";
+  const state = open ? `<span class="today-state open"><i></i>právě ordinujeme</span>`
+    : now.min < day.blocks[0][0] ? `<span class="today-state"><i></i>otevíráme v ${t(day.blocks[0][0])}</span>`
+    : cur ? `<span class="today-state"><i></i>přestávka do ${t(cur[1])}</span>`
+    : `<span class="today-state"><i></i>dnes už zavřeno</span>`;
+  el.innerHTML = `<div class="today-top"><span class="today-day">Dnes · ${DAYN[now.wd]}</span>${state}</div>
+    <h3>${day.who}</h3>
+    <ul>${day.blocks.map((b) => `<li class="${b[3] || ""} ${now.min >= b[1] ? "past" : ""}"><b>${t(b[0])}–${t(b[1])}</b><span>${b[2]}</span></li>`).join("")}</ul>
+    <p class="today-foot">${day.blocks.some((b) => b[3] === "book") ? 'Na blok pro objednané se <a href="/rezervace">objednáte online</a>.' : "Přijďte bez objednání, pacienti jdou podle pořadí."}</p>`;
+}
+
+function markWeek() {
+  const now = pragueNow();
+  const row = document.querySelector(`.wk-row[data-wd="${now.wd}"]`);
+  if (!row) return;
+  row.classList.add("is-today");
+  const track = row.querySelector(".track");
+  if (track && now.min >= 420 && now.min <= 1080) {
+    const n = document.createElement("div");
+    n.className = "now";
+    n.style.left = `${((now.min - 420) / 660) * 100}%`;
+    track.appendChild(n);
+  }
+}
+
+renderToday({});
+markWeek();
+ORTOHAL.closures.then((list) => renderToday(Object.fromEntries(list.map((c) => [c.date, c.note || "Dnes se neordinuje"]))));
+
+/* plovoucí tlačítko schovat, když je vidět jiné tlačítko na objednání */
+const fab = document.getElementById("fab");
+if ("IntersectionObserver" in window) {
+  const seen = new Set();
+  const io = new IntersectionObserver((es) => {
+    es.forEach((e) => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)));
+    fab.classList.toggle("hide", seen.size > 0);
   });
-  updateSummary();
+  document.querySelectorAll('main a[href="/rezervace"], .site-foot').forEach((a) => io.observe(a));
 }
 
-function updateSummary(){
-  const sum = document.getElementById('selectedSummary');
-  if(bookingState.doctor && bookingState.slot){
-    sum.textContent = `Vybraný termín: ${bookingState.doctor.name}, ${bookingState.doctor.day} ${bookingState.slot}`;
-  } else {
-    sum.textContent = 'Nejprve prosím vyberte volný čas výše.';
-  }
-}
-renderSlots();
-
-/* ===== Dynamic "Dnes v ambulanci" card ===== */
-(function(){
-  const dny = ['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'];
-  const schedule = {
-    1: { // pondělí
-      doctor: 'MUDr. Miroslav Halíř',
-      blocks: [
-        {time:'8:00 – 12:00', note:'bez objednání'},
-        {time:'12:00 – 13:00', note:'polední přestávka', pause:true},
-        {time:'13:00 – 16:00', note:'bez objednání'},
-        {time:'16:00 – 18:00', note:'pouze objednaní', booked:true},
-      ]
-    },
-    2: { // úterý
-      doctor: 'MUDr. Rostislav Kocián',
-      blocks: [
-        {time:'8:00 – 12:00', note:'bez objednání'},
-        {time:'12:00 – 12:30', note:'polední přestávka', pause:true},
-        {time:'12:30 – 15:30', note:'pouze objednaní', booked:true},
-      ]
-    },
-    3: null, // středa
-    4: { // čtvrtek
-      doctor: 'Sonografická poradna',
-      blocks: [
-        {time:'16:00 – 18:00', note:'sonografie kyčlí + ortop. poradna děti, bez objednání'},
-      ]
-    },
-    5: { // pátek
-      doctor: 'MUDr. Karel Zapalač',
-      blocks: [
-        {time:'7:00 – 14:00', note:'bez objednání'},
-      ]
-    },
-  };
-
-  const dayIdx = new Date().getDay();
-  const card = document.getElementById('todayCard');
-  if(!card) return;
-
-  const dayName = dny[dayIdx];
-  const info = schedule[dayIdx];
-
-  if(!info){
-    card.innerHTML = `
-      <h3 style="margin-bottom:12px;">Dnes v ambulanci</h3>
-      <div style="text-align:center; padding:18px 0;">
-        <div style="font-size:28px; margin-bottom:8px;">🔒</div>
-        <div style="font-weight:600; color:var(--ink-soft);">Dnes (${dayName}) neordinujeme</div>
-        <div style="font-size:13px; color:var(--ink-soft); margin-top:6px;">Nejbližší ordinace viz rozpis níže</div>
-      </div>
-      <div class="row"><span>Adresa</span><span>Nám. Hrdinů 8, Krnov</span></div>`;
-  } else {
-    const blocksHtml = info.blocks.map(b => {
-      if(b.pause) return `<div class="row" style="opacity:.5; font-size:12.5px;"><span>${b.time}</span><span>${b.note}</span></div>`;
-      if(b.booked) return `<div class="row" style="background:#FEF5F5; margin:0 -26px; padding:10px 26px; font-size:13.5px;"><span>${b.time}</span><span class="badge-booked" style="font-size:11px;">${b.note}</span></div>`;
-      return `<div class="row"><span>${b.time}</span><span>${b.note}</span></div>`;
-    }).join('');
-
-    card.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 style="margin:0;">Dnes v ambulanci</h3>
-        <span style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; background:var(--blue-pale); color:var(--blue); padding:3px 10px; border-radius:20px;">${dayName}</span>
-      </div>
-      <div class="row" style="font-weight:600;"><span>Lékař</span><span style="color:var(--blue-deep);">${info.doctor}</span></div>
-      ${blocksHtml}
-      <div class="row" style="margin-top:4px;"><span>Adresa</span><span>Nám. Hrdinů 8, Krnov</span></div>`;
-  }
-})();
-
-/* ===== Více dropdown ===== */
-function toggleMore(e){
-  e.stopPropagation();
-  document.getElementById('navMore').classList.toggle('open');
-}
-document.addEventListener('click', ()=> document.getElementById('navMore').classList.remove('open'));
-
-/* ===== Subpage system ===== */
-function navigatePage(page){
-  document.getElementById('navMore').classList.remove('open');
-  document.getElementById('mainNav').classList.remove('open');
-  const titles = {galerie:'Fotogalerie', certifikaty:'Certifikáty', erecept:'eRecept'};
-  document.getElementById('subpageTitle').textContent = titles[page] || page;
-  document.getElementById('subpageBody').innerHTML = renderSubpage(page);
-  const sp = document.getElementById('subpage');
-  sp.classList.add('open');
-  sp.scrollTop = 0;
-  attachSubpageForms();
-}
-
-function closeSubpage(){
-  document.getElementById('subpage').classList.remove('open');
-}
-
-function attachSubpageForms(){
-  const ef = document.getElementById('ereceptForm');
-  if(ef){
-    ef.addEventListener('submit', e=>{
-      e.preventDefault();
-      document.getElementById('ereceptSuccess').classList.add('show');
-      ef.reset();
-    });
-  }
-}
-
-function renderSubpage(page){
-  if(page === 'galerie') return `
-    <p style="color:var(--ink-soft); margin-bottom:28px;">Fotografie z naší ordinace a prostor ambulance. Fotky budou doplněny.</p>
-    <div class="gallery-grid">
-      <div class="gallery-item">Ordinace<br>(fotka bude doplněna)</div>
-      <div class="gallery-item">Čekárna<br>(fotka bude doplněna)</div>
-      <div class="gallery-item">Poliklinika<br>(fotka bude doplněna)</div>
-      <div class="gallery-item">Přístroje<br>(fotka bude doplněna)</div>
-      <div class="gallery-item">Recepce<br>(fotka bude doplněna)</div>
-      <div class="gallery-item">Vstup<br>(fotka bude doplněna)</div>
-    </div>`;
-
-  if(page === 'certifikaty') return `
-    <p style="color:var(--ink-soft); margin-bottom:28px;">Certifikáty a osvědčení našich lékařů a ambulance. Dokumenty budou doplněny.</p>
-    <div class="gallery-grid">
-      <div class="gallery-item">Certifikát<br>(bude doplněn)</div>
-      <div class="gallery-item">Certifikát<br>(bude doplněn)</div>
-      <div class="gallery-item">Certifikát<br>(bude doplněn)</div>
-    </div>`;
-
-  if(page === 'erecept') return `
-    <div style="max-width:600px;">
-      <div style="background:var(--blue-pale); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px; margin-bottom:28px; font-size:14.5px;">
-        <strong style="color:var(--blue-deep);">Elektronický recept bez návštěvy ordinace</strong><br>
-        <span style="color:var(--ink-soft);">Vyplňte formulář níže a Váš požadavek vyřídíme v nejbližší možné době. Recept je možné zaslat pouze pro léky, které Vám již byly dříve předepsány.</span>
-      </div>
-      <div class="success-box" id="ereceptSuccess">Váš požadavek na eRecept byl odeslán. Vyřídíme ho v nejbližší možné době.</div>
-      <form id="ereceptForm" class="form-card" style="padding:28px;">
-        <div class="field-row">
-          <div class="field"><label>Jméno a příjmení</label><input type="text" required></div>
-          <div class="field"><label>Datum narození</label><input type="date" required></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label>Telefon</label><input type="tel" required></div>
-          <div class="field"><label>E-mail</label><input type="email"></div>
-        </div>
-        <div class="field"><label>Název léku a dávkování</label><input type="text" placeholder="např. Ibuprofen 400 mg" required></div>
-        <div class="field"><label>Obtíže / důvod žádosti</label><textarea rows="3" placeholder="Stručně popište obtíže nebo důvod, proč lék potřebujete..."></textarea></div>
-        <div class="field"><label>Ošetřující lékař</label>
-          <select>
-            <option value="">— vyberte lékaře —</option>
-            <option>MUDr. Miroslav Halíř</option>
-            <option>MUDr. Rostislav Kocián</option>
-            <option>MUDr. Karel Zapalač</option>
-          </select>
-        </div>
-        <div class="checkbox-row">
-          <input type="checkbox" id="gdprErecept" required>
-          <label for="gdprErecept">Souhlasím se zpracováním osobních údajů za účelem vyřízení žádosti o eRecept. <a href="#" style="text-decoration:underline;">Ochrana osobních údajů</a></label>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; border:none;">Odeslat žádost o eRecept</button>
-      </form>
-    </div>`;
-
-  return '<p>Stránka nenalezena.</p>';
-}
-
-document.getElementById('contactForm').addEventListener('submit', e=>{
-  e.preventDefault();
-  document.getElementById('contactSuccess').classList.add('show');
-  e.target.reset();
-});
-
-document.getElementById('bookingForm').addEventListener('submit', e=>{
-  e.preventDefault();
-  if(!bookingState.slot){ alert('Vyberte prosím volný termín.'); return; }
-  document.getElementById('bookingSuccess').classList.add('show');
-  e.target.reset();
-});
+ORTOHAL.form("contactForm", "contact", "cMsg", "Děkujeme, zpráva odešla. Odpovíme vám e-mailem co nejdříve.");
 </script>
-<!-- SUBPAGE OVERLAY -->
-<div id="subpage">
-  <div class="subpage-header">
-    <button class="subpage-back" onclick="closeSubpage()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Zpět na hlavní stránku
-    </button>
-    <h2 class="subpage-title" id="subpageTitle"></h2>
-  </div>
-  <div class="subpage-body" id="subpageBody"></div>
-</div>
-
 </body>
 </html>
