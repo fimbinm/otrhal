@@ -44,30 +44,25 @@
   .today li.past{opacity:.45}
   .today-foot{margin-top:14px; font-size:14.5px; color:var(--ink-soft)}
 
-  /* týden */
-  .week{border-top:1px solid var(--line-strong)}
-  .wk-row{display:grid; grid-template-columns:150px minmax(0,1fr); gap:24px; padding:22px 0; border-bottom:1px solid var(--line); align-items:center}
-  .wk-row.is-today{background:linear-gradient(90deg, var(--blue-pale), transparent 70%); margin:0 -24px; padding-left:24px; padding-right:24px}
-  @media (max-width:700px){.track .bar{font-size:0; padding:0} .wk-row{grid-template-columns:1fr; gap:10px} .wk-row.is-today{margin:0 -16px; padding-left:16px; padding-right:16px}}
-  .wk-day{font:400 24px/1.1 var(--head); color:var(--blue-ink)}
-  .wk-day small{display:block; margin-top:6px; font:400 15px/1.3 var(--body); color:var(--ink-soft)}
-  .track{position:relative; height:38px; background:repeating-linear-gradient(90deg, transparent 0 calc(100%/11 - 1px), var(--line) calc(100%/11 - 1px) calc(100%/11)); border-left:1px solid var(--line)}
-  .bar{position:absolute; top:5px; bottom:5px; border-radius:2px; display:flex; align-items:center; padding:0 10px; font:500 13px/1 var(--head); letter-spacing:.03em; white-space:nowrap; overflow:hidden}
-  .bar.walk{background:var(--blue); color:#fff}
-  .bar.book{background:repeating-linear-gradient(135deg, var(--red) 0 7px, #CF3C42 7px 14px); color:#fff}
-  .bar.pause{background:transparent; border:1px dashed var(--line-strong); top:11px; bottom:11px}
-  .now{position:absolute; top:-6px; bottom:-6px; width:2px; background:var(--ink); z-index:2}
-  .now::after{content:"teď"; position:absolute; top:-18px; left:50%; transform:translateX(-50%); font:500 11px/1 var(--head); letter-spacing:.1em; text-transform:uppercase}
-  .axis{display:grid; grid-template-columns:150px minmax(0,1fr); gap:24px; padding-top:10px; font-size:13px; color:var(--ink-soft)}
-  .axis div{display:flex; justify-content:space-between; font-variant-numeric:tabular-nums}
-  @media (max-width:700px){.axis{grid-template-columns:1fr} .axis>span{display:none} .axis div span:nth-child(even){visibility:hidden}}
-  .wk-txt{margin-top:8px; font-size:15px; color:var(--ink-soft)}
-  .wk-txt b{color:var(--ink); font-weight:600}
-  .wk-txt .r{color:var(--red); font-weight:600}
-  .wk-empty{font-size:16px; color:var(--ink-soft); font-style:italic}
-  .legend{display:flex; gap:12px 28px; flex-wrap:wrap; margin-top:28px; font-size:15px; color:var(--ink-soft)}
-  .legend span{display:inline-flex; align-items:center; gap:10px}
-  .legend i{width:28px; height:12px; border-radius:2px}
+  /* ordinační hodiny */
+  .hours{border-top:1px solid var(--line-strong)}
+  .h-row{display:grid; grid-template-columns:170px 240px minmax(0,1fr); gap:8px 32px; padding:22px 0; border-bottom:1px solid var(--line); align-items:baseline}
+  .h-row.is-today{background:var(--blue-pale); margin:0 -24px; padding-left:24px; padding-right:24px}
+  .h-day{font:400 24px/1.2 var(--head); color:var(--blue-ink)}
+  .h-day .today-tag{display:inline-block; vertical-align:middle; margin-left:10px; font:500 11px/1 var(--head); letter-spacing:.14em; text-transform:uppercase; color:#fff; background:var(--blue); padding:5px 8px; border-radius:2px}
+  .h-doc{color:var(--ink-soft); font-size:16px}
+  .h-times{list-style:none; margin:0; padding:0}
+  .h-times li{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 14px; padding:3px 0; font-size:17px}
+  .h-times b{font:500 19px/1.3 var(--head); color:var(--ink); font-variant-numeric:tabular-nums; min-width:128px}
+  .h-times span{color:var(--ink-soft)}
+  .h-times .book{color:var(--red); font-weight:600}
+  .h-times .book a{color:var(--red)}
+  .h-closed{color:var(--ink-soft); font-style:italic; font-size:17px}
+  @media (max-width:860px){
+    .h-row{grid-template-columns:1fr; gap:4px}
+    .h-row.is-today{margin:0 -16px; padding-left:16px; padding-right:16px}
+    .h-doc{margin-bottom:8px}
+  }
   .rules{margin-top:40px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; border:1px solid var(--line-strong)}
   .rules div{padding:24px 26px; border-left:1px solid var(--line)}
   .rules div:first-child{border-left:0}
@@ -216,62 +211,46 @@
         <p class="kicker">Platné od 1. 4. 2025</p>
         <h2>Ordinační hodiny</h2>
       </div>
-      <p>Většinu dne ordinujeme bez objednání – pacienti jdou na řadu podle příchodu. Červené bloky jsou vyhrazené jen pro objednané přes online rezervaci.</p>
+      <p>Ve většině ordinačních hodin můžete přijít bez objednání, pacienti jdou na řadu podle příchodu. Časy označené červeně jsou jen pro objednané přes online rezervaci.</p>
     </div>
 
-    <div class="week" id="week">
-      <div class="wk-row" data-wd="1">
-        <div class="wk-day">Pondělí<small>MUDr. Miroslav Halíř</small></div>
-        <div>
-          <div class="track">
-            <div class="bar walk" style="left:9.09%;width:36.36%">bez objednání</div>
-            <div class="bar pause" style="left:45.45%;width:9.09%" title="Polední přestávka"></div>
-            <div class="bar walk" style="left:54.55%;width:27.27%">bez objednání</div>
-            <div class="bar book" style="left:81.82%;width:18.18%">objednaní</div>
-          </div>
-          <p class="wk-txt"><b>8:00–12:00</b> a <b>13:00–16:00</b> bez objednání · <span class="r">16:00–18:00 pouze objednaní</span></p>
-        </div>
+    <div class="hours" id="week">
+      <div class="h-row" data-wd="1">
+        <div class="h-day">Pondělí</div>
+        <div class="h-doc">MUDr. Miroslav Halíř</div>
+        <ul class="h-times">
+          <li><b>8:00 – 12:00</b><span>bez objednání</span></li>
+          <li><b>13:00 – 16:00</b><span>bez objednání</span></li>
+          <li><b>16:00 – 18:00</b><span class="book">jen objednaní – <a href="/rezervace">objednat online</a></span></li>
+        </ul>
       </div>
-      <div class="wk-row" data-wd="2">
-        <div class="wk-day">Úterý<small>MUDr. Rostislav Kocián</small></div>
-        <div>
-          <div class="track">
-            <div class="bar walk" style="left:9.09%;width:36.36%">bez objednání</div>
-            <div class="bar pause" style="left:45.45%;width:4.55%" title="Polední přestávka"></div>
-            <div class="bar book" style="left:50%;width:27.27%">objednaní</div>
-          </div>
-          <p class="wk-txt"><b>8:00–12:00</b> bez objednání · <span class="r">12:30–15:30 pouze objednaní</span></p>
-        </div>
+      <div class="h-row" data-wd="2">
+        <div class="h-day">Úterý</div>
+        <div class="h-doc">MUDr. Rostislav Kocián</div>
+        <ul class="h-times">
+          <li><b>8:00 – 12:00</b><span>bez objednání</span></li>
+          <li><b>12:30 – 15:30</b><span class="book">jen objednaní – <a href="/rezervace">objednat online</a></span></li>
+        </ul>
       </div>
-      <div class="wk-row" data-wd="3">
-        <div class="wk-day">Středa</div>
-        <div><p class="wk-empty">Neordinuje se</p></div>
+      <div class="h-row" data-wd="3">
+        <div class="h-day">Středa</div>
+        <div class="h-doc"></div>
+        <p class="h-closed">neordinuje se</p>
       </div>
-      <div class="wk-row" data-wd="4">
-        <div class="wk-day">Čtvrtek<small>Dětská poradna</small></div>
-        <div>
-          <div class="track">
-            <div class="bar walk" style="left:81.82%;width:18.18%">děti</div>
-          </div>
-          <p class="wk-txt"><b>16:00–18:00</b> sonografie dětských kyčlí a ortopedická poradna pro děti a dorost, bez objednání</p>
-        </div>
+      <div class="h-row" data-wd="4">
+        <div class="h-day">Čtvrtek</div>
+        <div class="h-doc">Dětská poradna</div>
+        <ul class="h-times">
+          <li><b>16:00 – 18:00</b><span>sonografie dětských kyčlí a poradna pro děti a dorost, bez objednání</span></li>
+        </ul>
       </div>
-      <div class="wk-row" data-wd="5">
-        <div class="wk-day">Pátek<small>MUDr. Karel Zapalač</small></div>
-        <div>
-          <div class="track">
-            <div class="bar walk" style="left:0;width:63.64%">bez objednání</div>
-          </div>
-          <p class="wk-txt"><b>7:00–14:00</b> bez objednání</p>
-        </div>
+      <div class="h-row" data-wd="5">
+        <div class="h-day">Pátek</div>
+        <div class="h-doc">MUDr. Karel Zapalač</div>
+        <ul class="h-times">
+          <li><b>7:00 – 14:00</b><span>bez objednání</span></li>
+        </ul>
       </div>
-      <div class="axis" aria-hidden="true"><span></span><div><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span></div></div>
-    </div>
-
-    <div class="legend">
-      <span><i style="background:var(--blue)"></i> bez objednání</span>
-      <span><i style="background:repeating-linear-gradient(135deg,var(--red) 0 5px,#CF3C42 5px 10px)"></i> pouze objednaní (online)</span>
-      <span><i style="border:1px dashed var(--line-strong)"></i> polední přestávka</span>
     </div>
 
     <div class="rules">
@@ -618,17 +597,10 @@ function renderToday(closed) {
 }
 
 function markWeek() {
-  const now = pragueNow();
-  const row = document.querySelector(`.wk-row[data-wd="${now.wd}"]`);
+  const row = document.querySelector(`.h-row[data-wd="${pragueNow().wd}"]`);
   if (!row) return;
   row.classList.add("is-today");
-  const track = row.querySelector(".track");
-  if (track && now.min >= 420 && now.min <= 1080) {
-    const n = document.createElement("div");
-    n.className = "now";
-    n.style.left = `${((now.min - 420) / 660) * 100}%`;
-    track.appendChild(n);
-  }
+  row.querySelector(".h-day").insertAdjacentHTML("beforeend", '<span class="today-tag">dnes</span>');
 }
 
 renderToday({});
