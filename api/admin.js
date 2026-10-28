@@ -1,6 +1,6 @@
-// Administrace pro ordinaci: přihlášení heslem (ADMIN_PASSWORD), přehled, ruční zápis, zrušení, zavřené dny.
+// Administrace pro ordinaci: přihlášení heslem (ADMIN_PASSWORD), přehled, ruční zápis, zrušení, aktuality, blokování časů.
 import { route, body, fail, clean, cleanText, email, phone, ip, limit, baseUrl, sign, verify, same, cookies, setCookie } from "./_lib/http.js";
-import { create, cancel, listRange, closures, setClosed, unsetClosed, pruneClosures, availability } from "./_lib/bookings.js";
+import { create, cancel, listRange, notices, addNotice, removeNotice, pruneNotices, blockTimes, unblockTime, availability } from "./_lib/bookings.js";
 import { VISIT_TYPES, INSURERS } from "./_lib/schedule.js";
 import { clinicEmail } from "./_lib/mail.js";
 import { today, addDays, isDate } from "./_lib/time.js";
@@ -33,12 +33,12 @@ export default route({
     await requireAdmin(req);
     const from = isDate(req.query.from) ? req.query.from : today();
     const to = isDate(req.query.to) ? req.query.to : addDays(from, 13);
-    await pruneClosures();
-    const [list, closed, days] = await Promise.all([listRange(from, to), closures(), availability()]);
+    await pruneNotices();
+    const [list, news, days] = await Promise.all([listRange(from, to), notices(), availability()]);
     return {
       from, to,
       bookings: list,
-      closed,
+      notices: news,
       days,
       types: VISIT_TYPES,
       insurers: INSURERS,
@@ -74,16 +74,29 @@ export default route({
     return { ok: true };
   },
 
-  "POST close": async (req) => {
+  "POST notice": async (req) => {
     await requireAdmin(req);
     const b = body(req);
-    await setClosed(clean(b.date, 10), clean(b.note, 120));
+    await addNotice({ text: clean(b.text, 200), from: clean(b.from, 10), to: clean(b.to, 10), closed: b.closed });
     return { ok: true };
   },
 
-  "POST open": async (req) => {
+  "POST notice-remove": async (req) => {
     await requireAdmin(req);
-    await unsetClosed(clean(body(req).date, 10));
+    await removeNotice(clean(body(req).id, 40));
+    return { ok: true };
+  },
+
+  "POST block": async (req) => {
+    await requireAdmin(req);
+    const b = body(req);
+    return { ok: true, ...(await blockTimes(clean(b.date, 10), clean(b.from, 5), clean(b.to, 5))) };
+  },
+
+  "POST unblock": async (req) => {
+    await requireAdmin(req);
+    const b = body(req);
+    await unblockTime(clean(b.date, 10), clean(b.time, 5));
     return { ok: true };
   },
 });

@@ -3,7 +3,8 @@
 //   t:{date}   obsazené časy dne – SADD je atomické, takže jeden čas nejde zabrat dvakrát
 //   p:{date}   telefony objednané na daný den (jedna online rezervace na den)
 //   d:{date}   id všech rezervací dne (pro administraci a kalendář)
-//   closed     hash datum → poznámka (dny, kdy se neordinuje)
+//   blk:{date} časy zablokované ordinací (jsou zároveň v t:{date}, takže je nikdo nezabere)
+//   notices    hash id → JSON aktuality {text, from, to, closed}; closed = v tyto dny se neordinuje
 // Osobní údaje se po termínu samy smažou (KEEP_DAYS).
 import { redis, pipeline, getJSON, mgetJSON } from "./redis.js";
 import { id as newId, fail } from "./http.js";
@@ -14,20 +15,62 @@ import { notifyBooked, notifyCancelled } from "./mail.js";
 const KEEP_DAYS = 60;
 const ttl = (date) => Math.max(3600, Math.round((startTs(date, "0:00") - Date.now()) / 1000) + KEEP_DAYS * 86400);
 
+export async function notices() {
+  const all = (await redis("HGETALL", "notices")) || [];
+  const out = [];
+  for (let i = 1; i < all.length; i += 2) {
+    try { out.push(JSON.parse(all[i])); } catch {}
+  }
+  return out.sort((x, y) => x.from.localeCompare(y.from));
+}
+
+// aktuální a budoucí aktuality (minulé se nezobrazují)
+export const activeNotices = async () => (await notices()).filter((n) => n.to >= today());
+
+// dny, kdy se neordinuje: datum → text aktuality
 export async function closures() {
-  const all = (await redis("HGETALL", "closed")) || [];
   const out = {};
-  for (let i = 0; i < all.length; i += 2) out[all[i]] = all[i + 1];
+  const t = today();
+  for (const n of await notices()) {
+    if (!n.closed) continue;
+    let d = n.from < t ? t : n.from;
+    for (let i = 0; d <= n.to && i < 400; i++, d = addDays(d, 1)) out[d] = n.text;
+  }
   return out;
+}
+
+export async function addNotice({ text, from, to, closed }) {
+  if (!text) fail(400, "Napište text aktuality.");
+  if (!isDate(from)) fail(400, "Vyplňte datum od.");
+  to = isDate(to) ? to : from;
+  if (to < from) fail(400, "Datum do je dřív než datum od.");
+  const n = { id: newId(8), text, from, to, closed: Boolean(closed) };
+  await redis("HSET", "notices", n.id, JSON.stringify(n));
+  return n;
+}
+
+export async function removeNotice(id) {
+  await redis("HDEL", "notices", String(id || ""));
+}
+
+// staré aktuality se průběžně uklízí
+export async function pruneNotices() {
+  const old = (await notices()).filter((n) => n.to < addDays(today(), -7)).map((n) => n.id);
+  if (old.length) await redis("HDEL", "notices", ...old);
 }
 
 export async function availability() {
   const dates = bookableDates();
-  const [closed, ...taken] = await Promise.all([closures(), ...dates.map((d) => redis("SMEMBERS", `t:${d}`))]);
+  const [closed, taken, blocked] = await Promise.all([
+    closures(),
+    pipeline(dates.map((d) => ["SMEMBERS", `t:${d}`])),
+    pipeline(dates.map((d) => ["SMEMBERS", `blk:${d}`])),
+  ]);
   return dates.map((date, i) => {
     const b = blockFor(date);
     const busy = new Set(taken[i] || []);
-    const slots = slotsFor(date).map((t) => ({ t, free: !busy.has(t) && !tooLate(date, t), busy: busy.has(t) }));
+    const blk = new Set(blocked[i] || []);
+    const slots = slotsFor(date).map((t) => ({ t, free: !busy.has(t) && !tooLate(date, t), busy: busy.has(t), blocked: blk.has(t) }));
     return {
       date,
       doctor: DOCTORS[b.doctor],
@@ -117,19 +160,22 @@ export async function listRange(from, to) {
   return all.filter(Boolean).sort((a, b) => a.start - b.start);
 }
 
-export async function setClosed(date, note) {
+// ordinace zablokuje časy (např. porada) – nikdo se na ně online nemůže objednat
+export async function blockTimes(date, from, to) {
+  const times = slotsFor(date);
+  if (!isDate(date) || !times.length) fail(400, "V tento den se online neobjednává.");
+  const i = times.indexOf(from), j = times.indexOf(to);
+  if (i < 0 || j < i) fail(400, "Zkontrolujte čas od–do.");
+  const pick = times.slice(i, j + 1);
+  const got = await pipeline(pick.map((t) => ["SADD", `t:${date}`, t]));
+  const mine = pick.filter((_, k) => got[k]); // obsazené rezervací zůstanou rezervací
+  const life = ttl(date);
+  if (mine.length) await pipeline([["SADD", `blk:${date}`, ...mine], ["EXPIRE", `blk:${date}`, life], ["EXPIRE", `t:${date}`, life]]);
+  return { blocked: mine.length, skipped: pick.length - mine.length };
+}
+
+export async function unblockTime(date, time) {
   if (!isDate(date)) fail(400, "Neplatné datum.");
-  await redis("HSET", "closed", date, note || "");
+  const was = await redis("SREM", `blk:${date}`, time);
+  if (was) await redis("SREM", `t:${date}`, time);
 }
-
-export async function unsetClosed(date) {
-  await redis("HDEL", "closed", date);
-}
-
-// staré zavřené dny se z přehledu průběžně uklízí
-export async function pruneClosures() {
-  const c = await closures();
-  const old = Object.keys(c).filter((d) => d < addDays(today(), -7));
-  if (old.length) await redis("HDEL", "closed", ...old);
-}
-

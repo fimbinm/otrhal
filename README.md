@@ -10,7 +10,7 @@ Rezervace se ukládají do Upstash Redis, e-maily odesílá Resend.
 - **Ordinace** dostane ke každé rezervaci e-mail s pozvánkou do kalendáře (`.ics`, METHOD:REQUEST) – Gmail / Google Kalendář ji sám zapíše; při zrušení přijde METHOD:CANCEL a událost zmizí.
 - Navíc je v administraci adresa kalendáře k odběru (Google Kalendář → Další kalendáře → Z adresy URL).
 - **Pacient** dostane potvrzení s `.ics` a odkazem na zrušení (`/zruseni?id=…`).
-- **Administrace** `/admin` (heslo): přehled po dnech, ruční zápis telefonických objednávek, zrušení, zavřené dny (zobrazí se i jako lišta na webu).
+- **Administrace** `/admin` (heslo): přehled po dnech, ruční zápis telefonických objednávek, zrušení, **aktuality** (text + od–do, volitelně „neordinuje se“ = zablokuje objednávání; zobrazí se jako lišta nahoře na hlavní stránce) a **blokování jednotlivých časů**.
 - Osobní údaje z rezervací se samy smažou 60 dní po termínu.
 
 ## Proměnné prostředí (Vercel → Settings → Environment Variables)

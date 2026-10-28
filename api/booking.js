@@ -1,6 +1,6 @@
 // Veřejné rezervace: volné termíny, objednání, zrušení, kalendářový odběr pro ordinaci.
 import { route, body, fail, clean, cleanText, email, phone, ip, limit, baseUrl, verify } from "./_lib/http.js";
-import { availability, create, get, cancel, listRange, closures } from "./_lib/bookings.js";
+import { availability, create, get, cancel, listRange, activeNotices } from "./_lib/bookings.js";
 import { VISIT_TYPES, INSURERS, SLOT_MIN } from "./_lib/schedule.js";
 import { calendar, vevent, when } from "./_lib/mail.js";
 import { today, addDays, isDate } from "./_lib/time.js";
@@ -8,12 +8,10 @@ import { today, addDays, isDate } from "./_lib/time.js";
 export default route({
   "GET days": async () => ({ slotMinutes: SLOT_MIN, types: VISIT_TYPES, insurers: INSURERS, days: await availability() }),
 
-  // zavřené dny pro lištu na hlavní stránce
-  "GET closed": async () => {
-    const c = await closures();
-    const t = today();
-    return { closed: Object.keys(c).filter((d) => d >= t).sort().map((d) => ({ date: d, note: c[d] })) };
-  },
+  // aktuality pro lištu na hlavní stránce (když žádné nejsou, lišta se neukáže)
+  "GET notices": async () => ({
+    notices: (await activeNotices()).map(({ text, from, to, closed }) => ({ text, from, to, closed })),
+  }),
 
   "POST book": async (req) => {
     const b = body(req);

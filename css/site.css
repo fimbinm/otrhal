@@ -88,9 +88,15 @@ button,input,select,textarea{font:inherit; color:inherit}
 }
 
 /* upozornění na zavřené dny */
-.notice{background:var(--red-pale); border-bottom:1px solid #F1CACA; color:#7D1D20; font-size:15px}
-.notice .wrap{padding-top:10px; padding-bottom:10px}
+.notice{background:var(--blue-pale); border-bottom:1px solid var(--line)}
+.notice .wrap{padding-top:14px; padding-bottom:14px}
+.notice p{margin:0; padding:4px 0; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 14px; font-size:16.5px; color:var(--blue-ink)}
+.notice p+p{border-top:1px solid var(--line); margin-top:6px; padding-top:10px}
+.notice .when{font:500 13px/1.4 var(--head); letter-spacing:.08em; text-transform:uppercase; color:#fff; background:var(--blue); padding:3px 9px; border-radius:2px; white-space:nowrap}
 .notice strong{font-weight:600}
+.notice p.closed .when{background:var(--red)}
+.notice:has(p.closed){background:var(--red-pale); border-color:#F1CACA}
+.notice p.closed{color:#7D1D20}
 
 /* sekce */
 section{padding:96px 0}

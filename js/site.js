@@ -27,14 +27,28 @@ window.ORTOHAL = (function () {
 
   const fmtDay = (d) => new Date(d + "T12:00:00").toLocaleDateString("cs-CZ", { weekday: "long", day: "numeric", month: "numeric" });
 
-  // dny, kdy se neordinuje (zadává ordinace v administraci)
-  const closures = api("/api/booking?a=closed").then((j) => j.closed || []).catch(() => []);
-  closures.then((list) => {
+  // aktuality z administrace – lišta nahoře na hlavní stránce (bez aktualit se neukáže)
+  const dm = (d) => { const x = new Date(d + "T12:00:00"); return `${x.getDate()}. ${x.getMonth() + 1}.`; };
+  const range = (n) => (n.from === n.to ? fmtDay(n.from) : `${dm(n.from)} – ${dm(n.to)}`);
+  const notices = api("/api/booking?a=notices").then((j) => j.notices || []).catch(() => []);
+  notices.then((list) => {
     const bar = document.getElementById("notice");
     if (!bar || !list.length) return;
-    const soon = list.slice(0, 8).map((c) => fmtDay(c.date) + (c.note ? ` (${escapeHtml(c.note)})` : "")).join(", ");
-    bar.querySelector(".wrap").innerHTML = `<strong>Neordinujeme:</strong> ${soon}`;
+    bar.querySelector(".wrap").innerHTML = list.slice(0, 4).map((n) =>
+      `<p class="${n.closed ? "closed" : ""}"><span class="when">${escapeHtml(range(n))}</span><strong>${escapeHtml(n.text)}</strong></p>`).join("");
     bar.hidden = false;
+  });
+
+  // dny, kdy se neordinuje (pro kartu „Dnes“)
+  const closures = notices.then((list) => {
+    const out = [];
+    list.filter((n) => n.closed).forEach((n) => {
+      for (let d = n.from, i = 0; d <= n.to && i < 400; i++) {
+        out.push({ date: d, note: n.text });
+        const x = new Date(d + "T12:00:00Z"); x.setUTCDate(x.getUTCDate() + 1); d = x.toISOString().slice(0, 10);
+      }
+    });
+    return out;
   });
 
   // odeslání formuláře na /api/form
