@@ -1,19 +1,308 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "regions": ["fra1"],
+  "regions": [
+    "fra1"
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
       ]
     },
     {
       "source": "/admin",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "o-nas"
+        }
+      ],
+      "destination": "/#ordinace",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "sluzby"
+        }
+      ],
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "sluzby-vypis"
+        }
+      ],
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "razova-vlna"
+        }
+      ],
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "kolagenove-injekce-guna"
+        }
+      ],
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "sonografie"
+        }
+      ],
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "pohybovy-aparat"
+        }
+      ],
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "operativa"
+        }
+      ],
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "protetika"
+        }
+      ],
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "ortoflex-one"
+        }
+      ],
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "endoprotezy-kolene"
+        }
+      ],
+      "destination": "/cviky",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "masaze-cviky"
+        }
+      ],
+      "destination": "/cviky",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "lekari"
+        }
+      ],
+      "destination": "/#lekari",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "ordinacni-hodiny"
+        }
+      ],
+      "destination": "/#hodiny",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "fotogalerie"
+        }
+      ],
+      "destination": "/#ordinace",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "rezervace"
+        }
+      ],
+      "destination": "/rezervace",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "erecept"
+        }
+      ],
+      "destination": "/erecept",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "cenik"
+        }
+      ],
+      "destination": "/#cenik",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "kontakt"
+        }
+      ],
+      "destination": "/#kontakt",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "has": [
+        {
+          "type": "query",
+          "key": "page",
+          "value": "ochrana-osobnich-udaju"
+        }
+      ],
+      "destination": "/ochrana-osobnich-udaju",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/rezervace.php",
+      "destination": "/rezervace",
+      "permanent": true
+    },
+    {
+      "source": "/_cz/_rezervace/:path*",
+      "destination": "/rezervace",
+      "permanent": true
+    },
+    {
+      "source": "/_cms7/upload/cviky/:file",
+      "destination": "/dokumenty/:file",
+      "permanent": true
+    },
+    {
+      "source": "/_cms7/upload/images/letak.pdf",
+      "destination": "/dokumenty/endoproteza-kolene-letak.pdf",
+      "permanent": true
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 15 * * *"
     }
   ]
 }

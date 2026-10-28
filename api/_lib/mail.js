@@ -211,3 +211,19 @@ ${detailRows(b, false)}`,
   }
   await Promise.allSettled(jobs);
 }
+
+// připomínka den předem (posílá api/cron.js)
+export async function notifyReminder(b, base) {
+  if (!b.email) return false;
+  return send({
+    to: b.email,
+    replyTo: clinicEmail() || undefined,
+    subject: `Připomínka: zítra v ${b.time} – ORTOHAL Krnov`,
+    html: `<h2 style="margin:6px 0 4px;font-size:20px;color:#122870">Zítra máte termín</h2>
+<p style="margin:0">Dobrý den, připomínáme Vaši návštěvu ortopedické ambulance.</p>
+${detailRows(b, false)}
+<p style="font-size:14px;color:#3d4659">Vezměte si prosím kartičku pojišťovny, případné lékařské zprávy a snímky.</p>
+<p style="font-size:14px;color:#3d4659">Pokud nemůžete přijít, termín prosím zrušte – uvolníte ho dalším pacientům.</p>
+${button(`${base}/zruseni?id=${encodeURIComponent(b.id)}`, "Nemůžu přijít – zrušit termín", "#C0272D")}`,
+  });
+}
