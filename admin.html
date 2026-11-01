@@ -79,6 +79,24 @@
 
   <div class="side">
     <div class="card">
+      <h2>Zapsat pacienta</h2>
+      <small class="help" style="margin-bottom:12px">Pro objednání po telefonu – termín se zablokuje i na webu.</small>
+      <div class="msg" id="aMsg" hidden></div>
+      <form id="addForm">
+        <div class="row2">
+          <div class="field"><label for="a_date">Den</label><select id="a_date" name="date" required></select></div>
+          <div class="field"><label for="a_time">Čas</label><select id="a_time" name="time" required></select></div>
+        </div>
+        <div class="field"><label for="a_name">Jméno a příjmení</label><input id="a_name" name="name" required></div>
+        <div class="row2">
+          <div class="field"><label for="a_phone">Telefon</label><input id="a_phone" name="phone" type="tel"></div>
+        </div>
+        <div class="field"><label for="a_email">E-mail (pošle se potvrzení)</label><input id="a_email" name="email" type="email"></div>
+        <button class="btn btn-blue" style="width:100%">Zapsat</button>
+      </form>
+    </div>
+
+    <div class="card">
       <h2>Aktuality na webu</h2>
       <small class="help">Zobrazí se nahoře na hlavní stránce, dokud neuplyne datum „do“. Když tu nic není, na webu se nic neukazuje.</small>
       <div class="msg" id="nMsg" hidden></div>
@@ -105,24 +123,6 @@
           <div class="field"><label for="b_to">Do (včetně)</label><select id="b_to" required></select></div>
         </div>
         <button class="btn btn-line" style="width:100%">Zablokovat</button>
-      </form>
-    </div>
-
-    <div class="card">
-      <h2>Zapsat pacienta</h2>
-      <small class="help" style="margin-bottom:12px">Pro objednání po telefonu – termín se zablokuje i na webu.</small>
-      <div class="msg" id="aMsg" hidden></div>
-      <form id="addForm">
-        <div class="row2">
-          <div class="field"><label for="a_date">Den</label><select id="a_date" name="date" required></select></div>
-          <div class="field"><label for="a_time">Čas</label><select id="a_time" name="time" required></select></div>
-        </div>
-        <div class="field"><label for="a_name">Jméno a příjmení</label><input id="a_name" name="name" required></div>
-        <div class="row2">
-          <div class="field"><label for="a_phone">Telefon</label><input id="a_phone" name="phone" type="tel"></div>
-        </div>
-        <div class="field"><label for="a_email">E-mail (pošle se potvrzení)</label><input id="a_email" name="email" type="email"></div>
-        <button class="btn btn-blue" style="width:100%">Zapsat</button>
       </form>
     </div>
 
