@@ -11,6 +11,7 @@ import { id as newId, fail } from "./http.js";
 import { DOCTORS, blockFor, slotsFor, startTs, endTs, tooLate, bookableDates } from "./schedule.js";
 import { today, addDays, isDate } from "./time.js";
 import { notifyBooked, notifyCancelled } from "./mail.js";
+import { occurrences, busyTimes } from "./gcal.js";
 
 const KEEP_DAYS = 60;
 const ttl = (date) => Math.max(3600, Math.round((startTs(date, "0:00") - Date.now()) / 1000) + KEEP_DAYS * 86400);
@@ -61,7 +62,8 @@ export async function pruneNotices() {
 
 export async function availability() {
   const dates = bookableDates();
-  const [closed, taken, blocked] = await Promise.all([
+  const [occ, closed, taken, blocked] = await Promise.all([
+    occurrences(),
     closures(),
     pipeline(dates.map((d) => ["SMEMBERS", `t:${d}`])),
     pipeline(dates.map((d) => ["SMEMBERS", `blk:${d}`])),
@@ -70,7 +72,14 @@ export async function availability() {
     const b = blockFor(date);
     const busy = new Set(taken[i] || []);
     const blk = new Set(blocked[i] || []);
-    const slots = slotsFor(date).map((t) => ({ t, free: !busy.has(t) && !tooLate(date, t), busy: busy.has(t), blocked: blk.has(t) }));
+    const ext = busyTimes(occ, date); // zapsáno přímo v Google Kalendáři
+    const slots = slotsFor(date).map((t) => ({
+      t,
+      free: !busy.has(t) && !ext.has(t) && !tooLate(date, t),
+      busy: busy.has(t) || ext.has(t),
+      blocked: blk.has(t),
+      external: ext.has(t),
+    }));
     return {
       date,
       doctor: DOCTORS[b.doctor],
@@ -89,6 +98,7 @@ export async function create(input, { manual = false, base = "" } = {}) {
     if (tooLate(date, time)) fail(400, "Na tento čas už se online objednat nelze. Zavolejte nám prosím.");
   } else if (date < today()) fail(400, "Termín je v minulosti.");
   if (date in (await closures())) fail(409, "V tento den se neordinuje. Vyberte prosím jiný den.");
+  if (busyTimes(await occurrences(), date).has(time)) fail(409, "Tento čas je už obsazený. Vyberte prosím jiný.");
 
   const life = ttl(date);
   if (!manual && input.phone) {

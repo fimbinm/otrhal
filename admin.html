@@ -172,6 +172,8 @@ function render() {
   const warns = [];
   if (!d.mailReady) warns.push("Není nastavený RESEND_API_KEY – e-maily se zatím neodesílají.");
   if (!d.clinicEmail) warns.push("Není nastavený CLINIC_EMAIL – ordinaci nechodí rezervace e-mailem.");
+  if (!d.gcal.configured) warns.push("Google Kalendář není propojený (GCAL_ICS_URL) – události zapsané jen v kalendáři web nevidí.");
+  else if (d.gcal.ok === false) warns.push("Google Kalendář se teď nepodařilo načíst – web používá poslední známé obsazení. Pokud to trvá, zkontrolujte tajnou adresu v GCAL_ICS_URL.");
   $("warn").innerHTML = warns.join("<br>"); $("warn").hidden = !warns.length;
   $("range").textContent = `${pretty(d.from, { day: "numeric", month: "numeric" })} – ${pretty(d.to, { day: "numeric", month: "numeric", year: "numeric" })}`;
   $("feed").value = d.feedUrl;
@@ -184,10 +186,13 @@ function render() {
     const day = d.days.find((x) => x.date === date);
     const active = list.filter((b) => b.status === "active").length;
     const shut = Boolean(day && day.closed);
-    const rows = [...list.map((b) => ({ t: b.time, b })), ...(day ? day.slots.filter((s) => s.blocked).map((s) => ({ t: s.t })) : [])]
+    const booked = new Set(list.filter((b) => b.status === "active").map((b) => b.time));
+    const rows = [...list.map((b) => ({ t: b.time, b })),
+      ...(day ? day.slots.filter((s) => s.blocked).map((s) => ({ t: s.t })) : []),
+      ...(day ? day.slots.filter((s) => s.external && !s.blocked && !booked.has(s.t)).map((s) => ({ t: s.t, ext: true })) : [])]
       .sort((x, y) => x.t.localeCompare(y.t, "cs", { numeric: true }));
     return `<div class="day-h ${shut ? "shut" : ""}"><h3>${esc(pretty(date))}</h3><span>${day ? esc(day.doctor) + " · " : ""}${active} objednaných${shut ? ` · <b style="color:var(--red)">NEORDINUJE SE (${esc(day.closed)})</b>` : ""}</span></div>` +
-      (rows.length ? `<table>${rows.map(({ t, b }) => !b ? `<tr class="blk"><td class="t">${esc(t)}</td><td><b>zablokováno</b> <span class="sub">nikdo se nemůže objednat</span></td><td style="text-align:right"><button class="x" data-unblock="${date}|${esc(t)}" style="color:var(--blue)">Odblokovat</button></td></tr>` : `<tr class="${b.status === "cancelled" ? "cx" : ""}">
+      (rows.length ? `<table>${rows.map(({ t, b, ext }) => ext ? `<tr class="blk"><td class="t">${esc(t)}</td><td><b>obsazeno v Google Kalendáři</b> <span class="sub">údaje najdete v kalendáři</span></td><td></td></tr>` : !b ? `<tr class="blk"><td class="t">${esc(t)}</td><td><b>zablokováno</b> <span class="sub">nikdo se nemůže objednat</span></td><td style="text-align:right"><button class="x" data-unblock="${date}|${esc(t)}" style="color:var(--blue)">Odblokovat</button></td></tr>` : `<tr class="${b.status === "cancelled" ? "cx" : ""}">
         <td class="t">${esc(b.time)}</td>
         <td><b>${esc(b.name)}</b>${b.birth ? ` <span class="sub">nar. ${esc(b.birth.split("-").reverse().join(". "))}</span>` : ""}
           ${b.source === "ordinace" ? '<span class="tag">tel.</span>' : ""}${b.status === "cancelled" ? `<span class="tag red">zrušil(a) ${esc(b.cancelledBy)}</span>` : ""}

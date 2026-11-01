@@ -11,6 +11,7 @@ Rezervace se ukládají do Upstash Redis, e-maily odesílá Resend.
 - Navíc je v administraci adresa kalendáře k odběru (Google Kalendář → Další kalendáře → Z adresy URL).
 - **Pacient** dostane potvrzení s `.ics` a odkazem na zrušení (`/zruseni?id=…`).
 - **Administrace** `/admin` (heslo): přehled po dnech, ruční zápis telefonických objednávek, zrušení, **aktuality** (text + od–do, volitelně „neordinuje se“ = zablokuje objednávání; zobrazí se jako lišta nahoře na hlavní stránce) a **blokování jednotlivých časů**.
+- **Google Kalendář → web:** web čte kalendář ordinace přes tajnou adresu iCal (`GCAL_ICS_URL`, `api/_lib/gcal.js`). Každá událost v něm zabere dané časy (událost do 15 minut jen termín, ve kterém začíná; celodenní celý den; událost označená „Volno“ nic). Zpoždění dává Google + 30 s mezipaměť webu. Opakování: denní a týdenní. Smazání události pacienta z webu rezervaci neruší.
 - Osobní údaje z rezervací se samy smažou 60 dní po termínu.
 
 ## Proměnné prostředí (Vercel → Settings → Environment Variables)
@@ -21,6 +22,7 @@ Rezervace se ukládají do Upstash Redis, e-maily odesílá Resend.
 | `RESEND_API_KEY` | klíč z resend.com |
 | `MAIL_FROM` | odesílatel, např. `ORTOHAL Krnov <rezervace@ortopediekrnov.cz>` (doména musí být ověřená v Resendu) |
 | `CLINIC_EMAIL` | e-mail ordinace, kam chodí rezervace, eRecepty a zprávy |
+| `GCAL_ICS_URL` | tajná adresa iCal kalendáře ordinace (Nastavení kalendáře → Integrovat kalendář) |
 | `ADMIN_PASSWORD` | heslo do `/admin` |
 | `SESSION_SECRET` | dlouhý náhodný řetězec (podpisy přihlášení a odkazu na kalendář) |
 | `SITE_URL` | `https://www.ortopediekrnov.cz` (odkazy v e-mailech) |

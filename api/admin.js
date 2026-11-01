@@ -3,6 +3,7 @@ import { route, body, fail, clean, cleanText, email, phone, ip, limit, baseUrl, 
 import { create, cancel, listRange, notices, addNotice, removeNotice, pruneNotices, blockTimes, unblockTime, availability } from "./_lib/bookings.js";
 import { VISIT_TYPES, INSURERS } from "./_lib/schedule.js";
 import { clinicEmail } from "./_lib/mail.js";
+import { gcalStatus } from "./_lib/gcal.js";
 import { today, addDays, isDate } from "./_lib/time.js";
 
 const COOKIE = "ortohal_admin";
@@ -45,6 +46,7 @@ export default route({
       clinicEmail: clinicEmail(),
       feedUrl: `${baseUrl(req)}/api/booking?a=feed&k=${await sign("feed")}`,
       mailReady: Boolean(process.env.RESEND_API_KEY),
+      gcal: gcalStatus(),
     };
   },
 
