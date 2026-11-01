@@ -1,7 +1,6 @@
 // Administrace pro ordinaci: přihlášení heslem (ADMIN_PASSWORD), přehled, ruční zápis, zrušení, aktuality, blokování časů.
-import { route, body, fail, clean, cleanText, email, phone, ip, limit, baseUrl, sign, verify, same, cookies, setCookie } from "./_lib/http.js";
+import { route, body, fail, clean, email, phone, ip, limit, baseUrl, sign, verify, same, cookies, setCookie } from "./_lib/http.js";
 import { create, cancel, listRange, notices, addNotice, removeNotice, pruneNotices, blockTimes, unblockTime, availability } from "./_lib/bookings.js";
-import { VISIT_TYPES, INSURERS } from "./_lib/schedule.js";
 import { clinicEmail } from "./_lib/mail.js";
 import { gcalStatus } from "./_lib/gcal.js";
 import { today, addDays, isDate } from "./_lib/time.js";
@@ -41,8 +40,6 @@ export default route({
       bookings: list,
       notices: news,
       days,
-      types: VISIT_TYPES,
-      insurers: INSURERS,
       clinicEmail: clinicEmail(),
       feedUrl: `${baseUrl(req)}/api/booking?a=feed&k=${await sign("feed")}`,
       mailReady: Boolean(process.env.RESEND_API_KEY),
@@ -59,12 +56,8 @@ export default route({
       date: clean(b.date, 10),
       time: clean(b.time, 5),
       name,
-      birth: isDate(b.birth) ? b.birth : "",
       phone: b.phone ? phone(b.phone) : "",
       email: email(b.email, false),
-      insurer: b.insurer in INSURERS ? String(b.insurer) : "",
-      type: VISIT_TYPES.includes(b.type) ? b.type : "",
-      note: cleanText(b.note, 500),
     }, { manual: true, base: baseUrl(req) });
     return { ok: true, id: booking.id };
   },

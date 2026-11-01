@@ -32,3 +32,7 @@ Náhledová nasazení (preview) používají v databázi vlastní prostor `pv:`,
 ## Úpravy
 
 - Podstránky `erecept`, `zruseni`, `ochrana-osobnich-udaju`, `404` se generují ze zdrojů v `tools/pages/` se společnou hlavičkou a patičkou z `index.html`: `python3 tools/pages.py`.
+
+## Úklid Gmailu a kalendáře
+
+Skript `tools/google-apps-script/uklid.gs` běží v Google Apps Script v účtu rezervace.ortohal@gmail.com a jednou denně přesouvá do koše maily z webu a události starší než 60 dní.

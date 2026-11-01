@@ -134,7 +134,6 @@ function detailRows(b, forClinic) {
     ["Termín", `<strong>${esc(when(b))}</strong>`],
     ["Lékař", esc(b.doctor)],
     ["Kde", esc(PLACE)],
-    ["Důvod", esc(b.type)],
   ]);
 }
 

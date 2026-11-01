@@ -19,18 +19,6 @@ export const SLOT_MIN = Number(process.env.SLOT_MINUTES) || 10;
 export const HORIZON_DAYS = Number(process.env.BOOKING_DAYS_AHEAD) || 42;
 export const LEAD_MIN = 60; // online nejpozději hodinu před termínem
 
-export const VISIT_TYPES = [
-  "První vyšetření",
-  "Kontrolní vyšetření",
-  "Rázová vlna",
-  "Aplikace injekcí (GUNA, Ortoflex)",
-  "Jiné",
-];
-
-export const INSURERS = {
-  111: "VZP ČR", 201: "VoZP", 205: "ČPZP", 207: "OZP", 209: "ZP Škoda", 211: "ZP MV ČR", 213: "RBP",
-};
-
 const min = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
 export const hhmm = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
 

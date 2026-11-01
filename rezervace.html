@@ -117,19 +117,11 @@
         <div class="step off" id="s3">
           <div class="step-h"><b>03</b><h2>Vaše údaje</h2></div>
           <form id="bookForm" novalidate>
-            <div class="row2">
-              <div class="field"><label for="f_name">Jméno a příjmení pacienta</label><input id="f_name" name="name" autocomplete="name" required></div>
-              <div class="field"><label for="f_birth">Datum narození</label><input id="f_birth" name="birth" type="date" min="1900-01-01" required></div>
-            </div>
+            <div class="field"><label for="f_name">Jméno a příjmení pacienta</label><input id="f_name" name="name" autocomplete="name" required></div>
             <div class="row2">
               <div class="field"><label for="f_phone">Telefon</label><input id="f_phone" name="phone" type="tel" autocomplete="tel" placeholder="777 123 456" required></div>
               <div class="field"><label for="f_email">E-mail</label><input id="f_email" name="email" type="email" autocomplete="email" required><div class="hint">Pošleme sem potvrzení a odkaz na zrušení.</div></div>
             </div>
-            <div class="row2">
-              <div class="field"><label for="f_ins">Zdravotní pojišťovna</label><select id="f_ins" name="insurer" required><option value="">Vyberte…</option></select></div>
-              <div class="field"><label for="f_type">Důvod návštěvy</label><select id="f_type" name="type" required><option value="">Vyberte…</option></select></div>
-            </div>
-            <div class="field"><label for="f_note">Poznámka <span style="text-transform:none;letter-spacing:0;color:var(--ink-soft)">(nepovinné)</span></label><textarea id="f_note" name="note" rows="3" maxlength="500" placeholder="Např. které místo bolí, od kdy, zda jde o kontrolu po úrazu…"></textarea></div>
             <div class="hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
             <label class="check"><input type="checkbox" name="consent" required> <span>Souhlasím se <a href="/ochrana-osobnich-udaju" target="_blank">zpracováním osobních údajů</a> pro účely objednání a beru na vědomí pravidla objednávání (objednaní mají přednost; při zpoždění rezervace propadá; akutní stavy jsou ošetřeny přednostně).</span></label>
             <button class="btn btn-red" type="submit" id="submitBtn" style="width:100%">Závazně objednat</button>
@@ -195,10 +187,6 @@ async function load(keep) {
   try {
     const j = await ORTOHAL.api("/api/booking?a=days");
     S.days = j.days;
-    if (!keep) {
-      $("f_ins").innerHTML = '<option value="">Vyberte…</option>' + Object.entries(j.insurers).map(([k, v]) => `<option value="${k}">${k} – ${escapeHtml(v)}</option>`).join("");
-      $("f_type").innerHTML = '<option value="">Vyberte…</option>' + j.types.map((t) => `<option>${escapeHtml(t)}</option>`).join("");
-    }
     renderDays();
     if (S.day) renderSlots();
   } catch (e) {
@@ -261,7 +249,6 @@ $("slots").addEventListener("click", (e) => {
 });
 
 $("moreDays").addEventListener("click", () => { S.showAll = true; renderDays(); });
-$("f_birth").max = new Date().toISOString().slice(0, 10);
 
 $("bookForm").addEventListener("submit", async (e) => {
   e.preventDefault();

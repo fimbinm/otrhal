@@ -120,14 +120,8 @@
         <div class="field"><label for="a_name">Jméno a příjmení</label><input id="a_name" name="name" required></div>
         <div class="row2">
           <div class="field"><label for="a_phone">Telefon</label><input id="a_phone" name="phone" type="tel"></div>
-          <div class="field"><label for="a_birth">Narozen/a</label><input id="a_birth" name="birth" type="date"></div>
         </div>
         <div class="field"><label for="a_email">E-mail (pošle se potvrzení)</label><input id="a_email" name="email" type="email"></div>
-        <div class="row2">
-          <div class="field"><label for="a_ins">Pojišťovna</label><select id="a_ins" name="insurer"></select></div>
-          <div class="field"><label for="a_type">Důvod</label><select id="a_type" name="type"></select></div>
-        </div>
-        <div class="field"><label for="a_note">Poznámka</label><input id="a_note" name="note"></div>
         <button class="btn btn-blue" style="width:100%">Zapsat</button>
       </form>
     </div>
@@ -194,10 +188,10 @@ function render() {
     return `<div class="day-h ${shut ? "shut" : ""}"><h3>${esc(pretty(date))}</h3><span>${day ? esc(day.doctor) + " · " : ""}${active} objednaných${shut ? ` · <b style="color:var(--red)">NEORDINUJE SE (${esc(day.closed)})</b>` : ""}</span></div>` +
       (rows.length ? `<table>${rows.map(({ t, b, ext }) => ext ? `<tr class="blk"><td class="t">${esc(t)}</td><td><b>obsazeno v Google Kalendáři</b> <span class="sub">údaje najdete v kalendáři</span></td><td></td></tr>` : !b ? `<tr class="blk"><td class="t">${esc(t)}</td><td><b>zablokováno</b> <span class="sub">nikdo se nemůže objednat</span></td><td style="text-align:right"><button class="x" data-unblock="${date}|${esc(t)}" style="color:var(--blue)">Odblokovat</button></td></tr>` : `<tr class="${b.status === "cancelled" ? "cx" : ""}">
         <td class="t">${esc(b.time)}</td>
-        <td><b>${esc(b.name)}</b>${b.birth ? ` <span class="sub">nar. ${esc(b.birth.split("-").reverse().join(". "))}</span>` : ""}
+        <td><b>${esc(b.name)}</b>
           ${b.source === "ordinace" ? '<span class="tag">tel.</span>' : ""}${b.status === "cancelled" ? `<span class="tag red">zrušil(a) ${esc(b.cancelledBy)}</span>` : ""}
-          <div class="sub">${[b.phone && `<a href="tel:${esc(b.phone)}">${esc(phone(b.phone))}</a>`, b.email && esc(b.email), b.insurer && esc(b.insurer), b.type && esc(b.type)].filter(Boolean).join(" · ")}</div>
-          ${b.note ? `<div class="sub" style="color:var(--ink)">„${esc(b.note)}“</div>` : ""}</td>
+          <div class="sub">${[b.phone && `<a href="tel:${esc(b.phone)}">${esc(phone(b.phone))}</a>`, b.email && esc(b.email)].filter(Boolean).join(" · ")}</div>
+          </td>
         <td style="text-align:right">${b.status === "active" ? `<button class="x" data-cancel="${esc(b.id)}" data-email="${b.email ? 1 : ""}">Zrušit</button>` : ""}</td></tr>`).join("")}</table>`
       : `<p class="empty">Nikdo objednaný.</p>`);
   }).join("");
@@ -216,10 +210,6 @@ function render() {
   $("a_date").innerHTML = d.days.filter((x) => !x.closed).map((x) => `<option value="${x.date}">${esc(pretty(x.date, { weekday: "short", day: "numeric", month: "numeric" }))}</option>`).join("");
   if (keep && [...$("a_date").options].some((o) => o.value === keep)) $("a_date").value = keep;
   fillTimes();
-  if (!$("a_ins").options.length) {
-    $("a_ins").innerHTML = '<option value="">—</option>' + Object.entries(d.insurers).map(([k, v]) => `<option value="${k}">${k} ${esc(v)}</option>`).join("");
-    $("a_type").innerHTML = '<option value="">—</option>' + d.types.map((t) => `<option>${esc(t)}</option>`).join("");
-  }
 }
 
 function fillTimes() {
