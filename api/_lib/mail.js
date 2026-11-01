@@ -1,7 +1,6 @@
 // E-maily přes Resend + pozvánky do kalendáře (.ics).
 // Ordinace dostane ke každé rezervaci pozvánku (METHOD:REQUEST) – Gmail / Google Kalendář,
 // Outlook i Apple ji samy zapíšou do kalendáře; zrušení pošle METHOD:CANCEL se stejným UID.
-import { INSURERS } from "./schedule.js";
 import { prettyPhone } from "./http.js";
 
 const KEY = process.env.RESEND_API_KEY;
@@ -76,21 +75,10 @@ function fold(line) {
 }
 
 export function vevent(b, { forClinic, cancelled = false } = {}) {
-  const ins = b.insurer ? `${b.insurer} ${INSURERS[b.insurer] || ""}`.trim() : "";
+  // do kalendáře ordinace (Google) jde jen jméno, telefon a čas – ostatní je v administraci
   const desc = forClinic
-    ? [
-        `Pacient: ${b.name}`,
-        b.birth && `Datum narození: ${b.birth.split("-").reverse().join(". ")}`,
-        b.phone && `Telefon: ${prettyPhone(b.phone)}`,
-        b.email && `E-mail: ${b.email}`,
-        ins && `Pojišťovna: ${ins}`,
-        b.type && `Důvod: ${b.type}`,
-        b.note && `Poznámka: ${b.note}`,
-        `Lékař: ${b.doctor}`,
-        `Zdroj: ${b.source === "ordinace" ? "zapsáno v ordinaci" : "online rezervace"}`,
-      ].filter(Boolean).join("\n")
+    ? [b.phone && `Telefon: ${prettyPhone(b.phone)}`, "Podrobnosti jsou v administraci webu."].filter(Boolean).join("\n")
     : `Ortopedická ambulance ORTOHAL – ${b.doctor}\nVezměte si prosím kartičku pojišťovny a případné zprávy a snímky.\nZměna nebo zrušení: tel. ${PHONE}`;
-  const surname = b.doctor.split(" ").pop();
   const lines = [
     "BEGIN:VEVENT",
     `UID:${b.id}@ortopediekrnov.cz`,
@@ -98,8 +86,8 @@ export function vevent(b, { forClinic, cancelled = false } = {}) {
     `DTSTAMP:${icsTime(Date.now())}`,
     `DTSTART:${icsTime(b.start)}`,
     `DTEND:${icsTime(b.end)}`,
-    `SUMMARY:${icsText(forClinic ? `${b.name} – ${b.type || "objednaný"} (${surname})` : `Ortopedie ORTOHAL – ${b.doctor}`)}`,
-    `LOCATION:${icsText(PLACE)}`,
+    `SUMMARY:${icsText(forClinic ? [b.name, b.phone && prettyPhone(b.phone)].filter(Boolean).join(", ") : `Ortopedie ORTOHAL – ${b.doctor}`)}`,
+    ...(forClinic ? [] : [`LOCATION:${icsText(PLACE)}`]),
     `DESCRIPTION:${icsText(desc)}`,
     `STATUS:${cancelled ? "CANCELLED" : "CONFIRMED"}`,
   ];
@@ -135,21 +123,18 @@ const attach = (ics, method, name = "termin.ics") => [{
 /* ---------- zprávy ---------- */
 
 function detailRows(b, forClinic) {
-  const ins = b.insurer ? `${b.insurer} ${INSURERS[b.insurer] || ""}` : "";
+  if (forClinic) { // e-mail ordinace jde do Gmailu: jen jméno, telefon a čas
+    return rows([
+      ["Termín", `<strong>${esc(when(b))}</strong>`],
+      ["Pacient", `<strong>${esc(b.name)}</strong>`],
+      ["Telefon", b.phone && `<a href="tel:${esc(b.phone)}">${esc(prettyPhone(b.phone))}</a>`],
+    ]);
+  }
   return rows([
     ["Termín", `<strong>${esc(when(b))}</strong>`],
     ["Lékař", esc(b.doctor)],
-    ...(forClinic
-      ? [
-          ["Pacient", `<strong>${esc(b.name)}</strong>`],
-          ["Narozen/a", esc(b.birth && b.birth.split("-").reverse().join(". "))],
-          ["Telefon", b.phone && `<a href="tel:${esc(b.phone)}">${esc(prettyPhone(b.phone))}</a>`],
-          ["E-mail", b.email && `<a href="mailto:${esc(b.email)}">${esc(b.email)}</a>`],
-          ["Pojišťovna", esc(ins)],
-          ["Důvod", esc(b.type)],
-          ["Poznámka", esc(b.note)],
-        ]
-      : [["Kde", esc(PLACE)], ["Důvod", esc(b.type)]]),
+    ["Kde", esc(PLACE)],
+    ["Důvod", esc(b.type)],
   ]);
 }
 
@@ -159,10 +144,9 @@ export async function notifyBooked(b, base) {
   if (clinic) {
     jobs.push(send({
       to: clinic,
-      replyTo: b.email || undefined,
       subject: `Nová rezervace: ${b.name} – ${when(b)}`,
       html: `<h2 style="margin:6px 0 4px;font-size:20px;color:#122870">Nová rezervace</h2>
-<p style="margin:0;color:#6b7588">${b.source === "ordinace" ? "Zapsáno v administraci." : "Pacient se objednal přes web."} Termín je v příloze jako pozvánka do kalendáře.</p>
+<p style="margin:0;color:#6b7588">${b.source === "ordinace" ? "Zapsáno v administraci." : "Pacient se objednal přes web."} Termín se sám zapíše do kalendáře, ostatní údaje jsou v administraci.</p>
 ${detailRows(b, true)}${button(`${base}/admin`, "Otevřít přehled rezervací")}`,
       attachments: attach(calendar([vevent(b, { forClinic: true })], "REQUEST"), "REQUEST", "rezervace.ics"),
     }));

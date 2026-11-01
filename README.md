@@ -7,7 +7,7 @@ Rezervace se ukládají do Upstash Redis, e-maily odesílá Resend.
 
 - Online se dá objednat jen do bloků „pouze objednaní“: **Po 16:00–18:00** (MUDr. Halíř) a **Út 12:30–15:30** (MUDr. Kocián), po 10 minutách, nejvýš 6 týdnů dopředu a nejpozději hodinu před termínem. Hodiny se mění v `api/_lib/schedule.js` (a tabulka na webu v `index.html`).
 - Jeden čas nejde zabrat dvakrát (atomické `SADD`), jeden telefon = jedna rezervace na den.
-- **Ordinace** dostane ke každé rezervaci e-mail s pozvánkou do kalendáře (`.ics`, METHOD:REQUEST) – Gmail / Google Kalendář ji sám zapíše; při zrušení přijde METHOD:CANCEL a událost zmizí.
+- **Ordinace** dostane ke každé rezervaci e-mail (jen jméno, telefon a čas, ostatní je v administraci) s pozvánkou do kalendáře (`.ics`, METHOD:REQUEST) – Gmail / Google Kalendář ji sám zapíše; při zrušení přijde METHOD:CANCEL a událost zmizí.
 - Navíc je v administraci adresa kalendáře k odběru (Google Kalendář → Další kalendáře → Z adresy URL).
 - **Pacient** dostane potvrzení s `.ics` a odkazem na zrušení (`/zruseni?id=…`).
 - **Administrace** `/admin` (heslo): přehled po dnech, ruční zápis telefonických objednávek, zrušení, **aktuality** (text + od–do, volitelně „neordinuje se“ = zablokuje objednávání; zobrazí se jako lišta nahoře na hlavní stránce) a **blokování jednotlivých časů**.
